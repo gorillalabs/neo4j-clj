@@ -24,6 +24,6 @@
 (defmethod neo4j->clj InternalRecord [record] (apply merge (map neo4j->clj (.fields record))))
 (defmethod neo4j->clj InternalPair [pair] {(-> pair .key keyword) (-> pair .value neo4j->clj)})
 (defmethod neo4j->clj NodeValue [value] (clojure.walk/keywordize-keys (into {} (.asMap value))))
-(defmethod neo4j->clj ScalarValueAdapter [v] (.asValue v))
+(defmethod neo4j->clj ScalarValueAdapter [v] (.asObject v))
 (defmethod neo4j->clj ListValue [l] (.asList l))
 (defmethod neo4j->clj NullValue [n] nil)
