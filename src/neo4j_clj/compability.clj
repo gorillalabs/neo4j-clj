@@ -4,7 +4,8 @@
   has functions to help to convert between Neo4j's data structures and Clojure"
   (:import (org.neo4j.driver.v1 Values)
            (org.neo4j.driver.internal InternalStatementResult InternalRecord InternalPair)
-           (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter NullValue ListValue)))
+           (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter NullValue ListValue)
+           (org.neo4j.cypher.internal.javacompat ExecutionResult)))
 
 (defn clj->neo4j
   "## Convert to Neo4j
@@ -27,3 +28,5 @@
 (defmethod neo4j->clj ScalarValueAdapter [v] (.asObject v))
 (defmethod neo4j->clj ListValue [l] (.asList l))
 (defmethod neo4j->clj NullValue [n] nil)
+
+(defmethod neo4j->clj ExecutionResult [r] (iterator-seq r))
