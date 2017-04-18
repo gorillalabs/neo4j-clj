@@ -11,7 +11,7 @@
   "## Convert to Neo4j
 
   Neo4j expects a map of key/value pairs. The map has to be constructed as
-  a ```Values.parameters``` instance which expects the values as an ```Object``` array"
+  a `Values.parameters` instance which expects the values as an `Object` array"
   [val]
   (->> val
        clojure.walk/stringify-keys
@@ -19,7 +19,13 @@
        (into-array Object)
        Values/parameters))
 
-(defmulti neo4j->clj class)
+(defmulti neo4j->clj
+  "## Convert from Neo4j
+
+  Neo4j returns results as `StatementResults`, which contain `InternalRecords`, which
+  contain `InternalPairs` etc. Therefore, this multimethod recursively calls itself
+  with the extracted content of the data structure until we have values, lists or `nil`."
+  class)
 
 (defmethod neo4j->clj InternalStatementResult [record] (map neo4j->clj (iterator-seq record)))
 (defmethod neo4j->clj InternalRecord [record] (apply merge (map neo4j->clj (.fields record))))
@@ -28,5 +34,3 @@
 (defmethod neo4j->clj ScalarValueAdapter [v] (.asObject v))
 (defmethod neo4j->clj ListValue [l] (.asList l))
 (defmethod neo4j->clj NullValue [n] nil)
-
-(defmethod neo4j->clj ExecutionResult [r] (iterator-seq r))
