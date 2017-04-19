@@ -39,7 +39,7 @@
         ;; Configure db to use bolt
         (.setConfig (.type bolt) "BOLT")
         (.setConfig (.enabled bolt) "true")
-        (.setConfig (.address bolt) uri)
+        (.setConfig (.address bolt) url)
         (.newGraphDatabase))))
 
 (defn create-in-memory-connection
