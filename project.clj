@@ -1,4 +1,4 @@
-(defproject neo4j-clj "0.3.0"
+(defproject neo4j-clj "0.3.1-SNAPSHOT"
   :description "Clojure bindings for Neo4j using the Java driver"
   :url "https://github.com/CYPP/neo4j-clj"
   :dependencies [[org.clojure/clojure "1.8.0"]
