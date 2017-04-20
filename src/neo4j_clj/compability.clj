@@ -2,6 +2,7 @@
   "Neo4j communicates with Java via custom data structures. Those are
   can contain lists, maps, nulls, values or combinations. This namespace
   has functions to help to convert between Neo4j's data structures and Clojure"
+  (:require [clojure.walk])
   (:import (org.neo4j.driver.v1 Values)
            (org.neo4j.driver.internal InternalRecord InternalPair
                                       InternalStatementResult)
