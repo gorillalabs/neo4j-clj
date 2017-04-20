@@ -4,7 +4,8 @@
   testing."
   (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]])
   (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens)
-           (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector GraphDatabaseFactory)
+           (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
+                                      GraphDatabaseFactory)
            (java.net ServerSocket)
            (java.io File)))
 
@@ -23,8 +24,8 @@
   (.getLocalPort (ServerSocket. 0)))
 
 (defn- create-temp-uri
-  "In-memory databases need an uri to communicate with the bolt driver. Therefore,
-  we need to get a free port."
+  "In-memory databases need an uri to communicate with the bolt driver.
+  Therefore, we need to get a free port."
   []
   (str "bolt://localhost:" (get-free-port)))
 
@@ -35,7 +36,7 @@
   (let [bolt (GraphDatabaseSettings$BoltConnector. "0")
         temp (System/getProperty "java.io.tmpdir")]
     (-> (GraphDatabaseFactory.)
-        (.newEmbeddedDatabaseBuilder (File. temp))
+        (.newEmbeddedDatabaseBuilder (File. (str temp (System/currentTimeMillis))))
         ;; Configure db to use bolt
         (.setConfig (.type bolt) "BOLT")
         (.setConfig (.enabled bolt) "true")
@@ -43,15 +44,15 @@
         (.newGraphDatabase))))
 
 (defn create-in-memory-connection
-  "To make the local db visible under the same interface/map as remote databases,
-  we connect to the local url. To be able to shutdown the local db, we merge a destroy
-  function into the map that can be called after testing.
+  "To make the local db visible under the same interface/map as remote
+  databases, we connect to the local url. To be able to shutdown the local db,
+  we merge a destroy function into the map that can be called after testing.
 
   _All_ data will be wiped after shutting down the db!"
   []
   (let [url (create-temp-uri)
         db (in-memory-db url)]
-    (merge (create-connection db)
+    (merge (create-connection url)
            {:destroy-fn (fn [] (.shutdown db))})))
 
 (defn destroy-in-memory-connection [connection]
@@ -64,8 +65,9 @@
   (neo4j->clj (.run sess query params)))
 
 (defn create-query
-  "Convenience function. Takes a cypher query as input, returns a function that takes
-  a session (and parameter as a map, optionally) and return the query result as a map."
+  "Convenience function. Takes a cypher query as input, returns a function that
+  takes a session (and parameter as a map, optionally) and return the query
+  result as a map."
   [cypher]
   (fn
     ([sess] (run-query sess cypher {}))
