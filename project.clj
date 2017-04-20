@@ -10,4 +10,13 @@
   :deploy-repositories [["releases" {:url   "http://172.18.102.210/repository/CYPP-builds/"
                                      :creds :gpg}]
                         ["snapshots" {:url   "http://172.18.102.210/repository/CYPP-build-snapshots/"
-                                      :creds :gpg}]])
+                                      :creds :gpg}]]
+  :release-tasks [["vcs" "assert-committed"]
+                  ;;["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag" "backend-develop-v"]
+                  ["uberjar"]
+                  ["deploy" "releases" "cypp.one/neo4j-clj" :project/version "target/neo4j-clj.jar"]
+                  ;;["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]])
