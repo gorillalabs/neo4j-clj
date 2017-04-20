@@ -2865,14 +2865,16 @@ net.brehaut.ClojureTools = (function (SH) {
     build_tree: build_tree
   };
 })(SyntaxHighlighter);
-</script><title>neo4j-clj -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name"><a href="https://github.com/CYPP/neo4j-clj">neo4j-clj</a></h1><h2 class="project-version">0.1.0-SNAPSHOT</h2><br /><p>Clojure bindings for Neo4j using the Java driver</p>
-</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.8.0</td></tr><tr><td class="dep-name">org.neo4j/neo4j-bolt</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-kernel</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-io</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-dbms</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-graphdb-api</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-jdbc-bolt</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-jdbc-driver</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j.test/neo4j-harness</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">junit/junit</td><td class="dotted"><hr /></td><td class="dep-version">4.12</td></tr></table></div><div class="dependencies"><h3>dev dependencies</h3><table><tr><td class="dep-name">org.neo4j/neo4j</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#neo4j-clj.compability">neo4j-clj.compability</a></li><li><a href="#neo4j-clj.core">neo4j-clj.core</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#neo4j-clj.compability" name="neo4j-clj.compability"><h1 class="project-name">neo4j-clj.compability</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>Neo4j communicates with Java via custom data structures. Those are
+</script><title>neo4j-clj -- Marginalia</title></head><body><table><tr><td class="docs"><div class="header"><h1 class="project-name"><a href="https://github.com/CYPP/neo4j-clj">neo4j-clj</a></h1><h2 class="project-version">0.2.0-SNAPSHOT</h2><br /><p>Clojure bindings for Neo4j using the Java driver</p>
+</div><div class="dependencies"><h3>dependencies</h3><table><tr><td class="dep-name">org.clojure/clojure</td><td class="dotted"><hr /></td><td class="dep-version">1.8.0</td></tr><tr><td class="dep-name">org.neo4j/neo4j</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr><tr><td class="dep-name">org.neo4j/neo4j-jdbc-driver</td><td class="dotted"><hr /></td><td class="dep-version">3.0.1</td></tr></table></div></td><td class="codes" style="text-align: center; vertical-align: middle;color: #666;padding-right:20px"><br /><br /><br />(this space intentionally left almost blank)</td></tr><tr><td class="docs"><div class="toc"><a name="toc"><h3>namespaces</h3></a><ul><li><a href="#neo4j-clj.compability">neo4j-clj.compability</a></li><li><a href="#neo4j-clj.core">neo4j-clj.core</a></li><li><a href="#neo4j-clj.demo">neo4j-clj.demo</a></li></ul></div></td><td class="codes">&nbsp;</td></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#neo4j-clj.compability" name="neo4j-clj.compability"><h1 class="project-name">neo4j-clj.compability</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>Neo4j communicates with Java via custom data structures. Those are
   can contain lists, maps, nulls, values or combinations. This namespace
   has functions to help to convert between Neo4j's data structures and Clojure</p>
 </td><td class="codes"><pre class="brush: clojure">(ns neo4j-clj.compability
   (:import (org.neo4j.driver.v1 Values)
-           (org.neo4j.driver.internal InternalStatementResult InternalRecord InternalPair)
-           (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter NullValue ListValue)
+           (org.neo4j.driver.internal InternalRecord InternalPair
+                                      InternalStatementResult)
+           (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter
+                                            NullValue ListValue)
            (org.neo4j.cypher.internal.javacompat ExecutionResult)))</pre></td></tr><tr><td class="docs"><h2>Convert to Neo4j</h2>
 
 <p>  Neo4j expects a map of key/value pairs. The map has to be constructed as
@@ -2885,24 +2887,33 @@ net.brehaut.ClojureTools = (function (SH) {
        (into-array Object)
        Values/parameters))</pre></td></tr><tr><td class="docs"><h2>Convert from Neo4j</h2>
 
-<p>  Neo4j returns results as <code>StatementResults</code>, which contain <code>InternalRecords</code>, which
-  contain <code>InternalPairs</code> etc. Therefore, this multimethod recursively calls itself
-  with the extracted content of the data structure until we have values, lists or <code>nil</code>.</p>
+<p>  Neo4j returns results as <code>StatementResults</code>, which contain <code>InternalRecords</code>,
+  which contain <code>InternalPairs</code> etc. Therefore, this multimethod recursively
+  calls itself with the extracted content of the data structure until we have
+  values, lists or <code>nil</code>.</p>
 </td><td class="codes"><pre class="brush: clojure">(defmulti neo4j-&gt;clj
   class)</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj InternalStatementResult [record] (map neo4j-&gt;clj (iterator-seq record)))
-(defmethod neo4j-&gt;clj InternalRecord [record] (apply merge (map neo4j-&gt;clj (.fields record))))
-(defmethod neo4j-&gt;clj InternalPair [pair] {(-&gt; pair .key keyword) (-&gt; pair .value neo4j-&gt;clj)})
-(defmethod neo4j-&gt;clj NodeValue [value] (clojure.walk/keywordize-keys (into {} (.asMap value))))
-(defmethod neo4j-&gt;clj ScalarValueAdapter [v] (.asObject v))
-(defmethod neo4j-&gt;clj ListValue [l] (.asList l))
-(defmethod neo4j-&gt;clj NullValue [n] nil)</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#neo4j-clj.core" name="neo4j-clj.core"><h1 class="project-name">neo4j-clj.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This namespace contains the logic to connect to Neo4j instances,
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj InternalStatementResult [record]
+  (map neo4j-&gt;clj (iterator-seq record)))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj InternalRecord [record]
+  (apply merge (map neo4j-&gt;clj (.fields record))))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj InternalPair [pair]
+  {(-&gt; pair .key keyword) (-&gt; pair .value neo4j-&gt;clj)})</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj NodeValue [value]
+  (clojure.walk/keywordize-keys (into {} (.asMap value))))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj ScalarValueAdapter [v]
+  (.asObject v))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj ListValue [l]
+  (.asList l))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defmethod neo4j-&gt;clj NullValue [n]
+  nil)</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#neo4j-clj.core" name="neo4j-clj.core"><h1 class="project-name">neo4j-clj.core</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs"><p>This namespace contains the logic to connect to Neo4j instances,
   create and run queries as well as creating an in-memory database for
   testing.</p>
 </td><td class="codes"><pre class="brush: clojure">(ns neo4j-clj.core
   (:require [neo4j-clj.compability :refer [neo4j-&gt;clj clj-&gt;neo4j]])
   (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens)
-           (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector GraphDatabaseFactory)
+           (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
+                                      GraphDatabaseFactory)
            (java.net ServerSocket)
            (java.io File)))</pre></td></tr><tr><td class="docs"><p>Returns a connection map from an url. Uses BOLT as the only communication
   protocol.</p>
@@ -2915,8 +2926,8 @@ net.brehaut.ClojureTools = (function (SH) {
    (let [db (GraphDatabase/driver url)]
      {:url url, :db db})))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- get-free-port []
-  (.getLocalPort (ServerSocket. 0)))</pre></td></tr><tr><td class="docs"><p>In-memory databases need an uri to communicate with the bolt driver. Therefore,
-  we need to get a free port.</p>
+  (.getLocalPort (ServerSocket. 0)))</pre></td></tr><tr><td class="docs"><p>In-memory databases need an uri to communicate with the bolt driver.
+  Therefore, we need to get a free port.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn- create-temp-uri
   []
   (str &quot;bolt://localhost:&quot; (get-free-port)))</pre></td></tr><tr><td class="docs"><p>In order to store temporary large graphs, the embedded Neo4j database uses a
@@ -2926,34 +2937,47 @@ net.brehaut.ClojureTools = (function (SH) {
   (let [bolt (GraphDatabaseSettings$BoltConnector. &quot;0&quot;)
         temp (System/getProperty &quot;java.io.tmpdir&quot;)]
     (-&gt; (GraphDatabaseFactory.)
-        (.newEmbeddedDatabaseBuilder (File. temp))
+        (.newEmbeddedDatabaseBuilder (File. (str temp (System/currentTimeMillis))))
         ;; Configure db to use bolt
         (.setConfig (.type bolt) &quot;BOLT&quot;)
         (.setConfig (.enabled bolt) &quot;true&quot;)
-        (.setConfig (.address bolt) uri)
-        (.newGraphDatabase))))</pre></td></tr><tr><td class="docs"><p>To make the local db visible under the same interface/map as remote databases,
-  we connect to the local url. To be able to shutdown the local db, we merge a destroy
-  function into the map that can be called after testing.</p>
+        (.setConfig (.address bolt) url)
+        (.newGraphDatabase))))</pre></td></tr><tr><td class="docs"><p>To make the local db visible under the same interface/map as remote
+  databases, we connect to the local url. To be able to shutdown the local db,
+  we merge a destroy function into the map that can be called after testing.</p>
 
 <p>  <em>All</em> data will be wiped after shutting down the db!</p>
 </td><td class="codes"><pre class="brush: clojure">(defn create-in-memory-connection
   []
   (let [url (create-temp-uri)
         db (in-memory-db url)]
-    (merge (create-connection db)
+    (merge (create-connection url)
            {:destroy-fn (fn [] (.shutdown db))})))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn destroy-in-memory-connection [connection]
   ((:destroy-fn connection)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn get-session [connection]
   (.session (:db connection)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- run-query [sess query params]
-  (neo4j-&gt;clj (.run sess query params)))</pre></td></tr><tr><td class="docs"><p>Convenience function. Takes a cypher query as input, returns a function that takes
-  a session (and parameter as a map, optionally) and return the query result as a map.</p>
+  (neo4j-&gt;clj (.run sess query params)))</pre></td></tr><tr><td class="docs"><p>Convenience function. Takes a cypher query as input, returns a function that
+  takes a session (and parameter as a map, optionally) and return the query
+  result as a map.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn create-query
   [cypher]
   (fn
     ([sess] (run-query sess cypher {}))
-    ([sess params] (run-query sess cypher (clj-&gt;neo4j params)))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/gdeer81/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_neo4j-clj.compability">neo4j-clj.compability</li><li class="floating-toc-li" id="floating-toc_neo4j-clj.core">neo4j-clj.core</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
+    ([sess params] (run-query sess cypher (clj-&gt;neo4j params)))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#neo4j-clj.demo" name="neo4j-clj.demo"><h1 class="project-name">neo4j-clj.demo</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(ns neo4j-clj.demo
+  (:require [neo4j-clj.core :as db]))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(def create-user
+  (db/create-query &quot;CREATE (u:User {user})&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(def get-all-users
+  (db/create-query &quot;MATCH (u:User) RETURN u as user&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(def local-db (db/create-connection &quot;bolt://localhost:7687&quot; &quot;neo4j&quot; &quot;password&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(with-open [session (db/get-session local-db)]
+  (create-user session {:user {:first-name &quot;Luke&quot; :last-name &quot;Skywalker&quot;}}))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(with-open [session (db/get-session local-db)]
+  (get-all-users session))</pre></td></tr><tr><td class="docs"><p>=> ({:user {:first-name "Luke", :last-name "Skywalker"}})</p>
+</td><td class="codes"></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/gdeer81/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_neo4j-clj.compability">neo4j-clj.compability</li><li class="floating-toc-li" id="floating-toc_neo4j-clj.core">neo4j-clj.core</li><li class="floating-toc-li" id="floating-toc_neo4j-clj.demo">neo4j-clj.demo</li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
 SyntaxHighlighter.all();
 
 // hackity hack
