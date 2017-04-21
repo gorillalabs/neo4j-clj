@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [neo4j-clj "0.3.1-SNAPSHOT"]
+                 [org.neo4j/neo4j-cypher "3.1.3"]
                  ]
   :main ^:skip-aot example.core
   :target-path "target/%s"
