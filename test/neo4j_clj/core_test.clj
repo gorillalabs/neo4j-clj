@@ -2,14 +2,15 @@
   (:require [clojure.test :refer :all]
             [neo4j-clj.core :refer :all]))
 
-(def create-test-user
-  (create-query "CREATE (u:TestUser {user})"))
+(defquery create-test-user
+          "CREATE (u:TestUser {user})")
 
-(def get-test-users-by-name
-  (create-query "MATCH (u:TestUser {name: {name}}) RETURN u.name as name, u.role as role"))
+(defquery get-test-users-by-name
+          "MATCH (u:TestUser {name: {name}}) RETURN u.name as name, u.role as role")
 
-(def delete-test-user-by-name
-  (create-query "MATCH (u:TestUser {name: {name}}) DELETE u"))
+
+(defquery delete-test-user-by-name
+          "MATCH (u:TestUser {name: {name}}) DELETE u")
 
 (def dummy-user
   {:name "MyTestUser" :role "Dummy"})

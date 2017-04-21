@@ -72,3 +72,7 @@
   (fn
     ([sess] (run-query sess cypher {}))
     ([sess params] (run-query sess cypher (clj->neo4j params)))))
+
+(defmacro defquery "Shortcut macro to define a named query."
+  [name query]
+  `(def ~name (create-query ~query)))
