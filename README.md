@@ -70,15 +70,15 @@ For the parameters you have two options:
 (db/defquery create-user "CREATE (u:User {user})")
 (create-user session {:user {:first-name ....}}
 
-(defquery get-users "MATCH (u:User) RETURN u as user")
+(db/defquery get-users "MATCH (u:User) RETURN u as user")
 (get-users session)
 ;; => {:user {...}}
 
 ;; Extracted parameters
-(defquery create-user "CREATE (u:User {name: {name}, age: {age}})")
+(db/defquery create-user "CREATE (u:User {name: {name}, age: {age}})")
 (create-user session {:name "..." :age 42})
 
-(defquery get-users "MATCH (u:User) RETURN u.name as name, u.age as age")
+(db/defquery get-users "MATCH (u:User) RETURN u.name as name, u.age as age")
 (get-users session)
 ;; => ({:name "..." :age 42}, ...)
 ```
