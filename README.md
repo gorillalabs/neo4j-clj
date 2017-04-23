@@ -41,47 +41,44 @@ After starting a new Neo4j instance (see docker command), you have to visit
 neither read nor write roles.
 
 ```clojure
-(ns neo4j-clj.demo
-  (:require [neo4j-clj.core :as db]))
+(ns example.core
+  (:require [neo4j-clj.core :as db]
+            [clojure.pprint]))
 
-(def create-user
-  (db/create-query "CREATE (u:User {user})"))
-;; Parameter must be a map with a key :user
+(db/defquery create-user "CREATE (u:User {user})")
 
-(def get-all-users
-  (db/create-query "MATCH (u:User) RETURN u as user"))
+(db/defquery get-all-users
+             "MATCH (u:User) RETURN u as user")
 
-(def local-db (db/create-connection "bolt://localhost:7687" "neo4j" "password"))
-
-(with-open [session (db/get-session local-db)]
-  (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
-
-(with-open [session (db/get-session local-db)]
-  (get-all-users session))
+(def local-db (db/create-connection "bolt://localhost:7687" "neo4j" "eJD,s(3X*vcz"))
 ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
+
+(defn -main
+  "I don't do a whole lot ... yet."
+  [& args]
+  (clojure.pprint/pprint (with-open [session (db/get-session local-db)]
+                           (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}})))
+
+  (clojure.pprint/pprint
+    (with-open [session (db/get-session local-db)]
+      (get-all-users session))))
 ```
 
 For the parameters you have two options:
 ```clojure
 ;; Wrapped object
-(def create-user
-  (db/create-query "CREATE (u:User {user})"))
-  
+(db/defquery create-user "CREATE (u:User {user})")
 (create-user session {:user {:first-name ....}}
 
-(def get-users
-  (db/create-query "MATCH (u:User) RETURN u as user"))
-
-(get-users session) ;; => {:user {...}}
+(defquery get-users "MATCH (u:User) RETURN u as user")
+(get-users session)
+;; => {:user {...}}
 
 ;; Extracted parameters
-(def create-user
-  (db/create-query "CREATE (u:User {name: {name}, age: {age}})"))
-  
+(defquery create-user "CREATE (u:User {name: {name}, age: {age}})")
 (create-user session {:name "..." :age 42})
 
-(def get-users
-  (db/create-query "MATCH (u:User) RETURN u.name as name, u.age as age")
-  
-(get-users session) ;; => ({:name "..." :age 42}, ...)
+(defquery get-users "MATCH (u:User) RETURN u.name as name, u.age as age")
+(get-users session)
+;; => ({:name "..." :age 42}, ...)
 ```

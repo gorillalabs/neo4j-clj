@@ -8,13 +8,7 @@
              "MATCH (u:User) RETURN u as user")
 
 (def local-db (db/create-connection "bolt://localhost:7687" "neo4j" "eJD,s(3X*vcz"))
-
-
-
-
 ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
-
-
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -24,6 +18,4 @@
 
   (clojure.pprint/pprint
     (with-open [session (db/get-session local-db)]
-      (get-all-users session))
-
-    ))
+      (get-all-users session))))
