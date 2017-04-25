@@ -1,6 +1,6 @@
 (ns example.core)
 (:require [neo4j-clj.core :as db]
-          [clojure.pprint])
+  [clojure.pprint])
 
 (def local-db (db/create-connection "bolt://localhost:7687" "neo4j" "eJD,s(3X*vcz"))
 
@@ -12,7 +12,9 @@
   "Example usage of neo4j-clj"
   [& args]
   (with-open [session (db/get-session local-db)]
-    (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
+    (db/with-db-transaction
+      tx session
+      (create-user tx {:user {:first-name "Luke" :last-name "Skywalker"}})))
 
   (clojure.pprint/pprint
     (with-open [session (db/get-session local-db)]

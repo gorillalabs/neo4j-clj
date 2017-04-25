@@ -3,7 +3,7 @@
   create and run queries as well as creating an in-memory database for
   testing."
   (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]])
-  (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens)
+  (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction)
            (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
                                       GraphDatabaseFactory)
            (java.net ServerSocket)
@@ -76,3 +76,18 @@
 (defmacro defquery "Shortcut macro to define a named query."
   [name query]
   `(def ~name (create-query ~query)))
+
+(defmacro with-in-memory-db [db & body]
+  `(let [~db (create-in-memory-connection)]
+     (try
+       (println "I started an in-memory instance" ~db)
+       ~@body
+       (finally
+         (destroy-in-memory-connection ~db)))))
+
+(def success (memfn #^Transaction success))
+(def failure (memfn #^Transaction failure))
+
+(defmacro with-db-transaction [tx session & body]
+  `(with-open [~tx (.beginTransaction ~session)]
+     ~@body))
