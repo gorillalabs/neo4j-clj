@@ -9,7 +9,8 @@
            (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter
                                             NullValue ListValue MapValue)
            (org.neo4j.cypher.internal.javacompat ExecutionResult)
-           (java.util Map List)))
+           (java.util Map List)
+           (clojure.lang ISeq)))
 
 (defn clj->neo4j
   "## Convert to Neo4j
@@ -54,7 +55,10 @@
   (apply merge (map neo4j->clj (.fields record))))
 
 (defmethod neo4j->clj InternalPair [^InternalPair pair]
-  {(-> pair .key keyword) (-> pair .value neo4j->clj)})
+  (let [k (-> pair .key keyword)
+        v (-> pair .value neo4j->clj)
+        ]
+    {k v}))
 
 (defmethod neo4j->clj NodeValue [^NodeValue value]
   (transform (into {} (.asMap value))))
@@ -63,7 +67,11 @@
   (.asObject v))
 
 (defmethod neo4j->clj ListValue [^ListValue l]
-  (map neo4j->clj (.asList l)))
+  (map neo4j->clj (into [] (.asList l)))
+  )
+
+(defmethod neo4j->clj ISeq [^ISeq s]
+  (map neo4j->clj s))
 
 (defmethod neo4j->clj MapValue [^MapValue l]
   (transform (into {} (.asMap l))))
@@ -77,7 +85,12 @@
   nil)
 
 (defmethod neo4j->clj List [^List l]
-  (transform (into [] l)))
+  (map neo4j->clj (into [] l)))
+
+(defmethod neo4j->clj Map [^Map m]
+  (transform (into {} m)))
+
+
 
 (defmethod neo4j->clj :default [x]
   x)
