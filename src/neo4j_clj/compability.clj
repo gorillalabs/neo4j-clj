@@ -37,8 +37,8 @@
 
 (defn transform [m]
   (let [f (fn [[k v]]
-            [(if (string? k) (keyword k) k) (neo4j->clj v)]
-            )]
+            [(if (string? k) (keyword k) k) (neo4j->clj v)])]
+
     ;; only apply to maps
     (clojure.walk/postwalk
       (fn [x]
@@ -56,8 +56,8 @@
 
 (defmethod neo4j->clj InternalPair [^InternalPair pair]
   (let [k (-> pair .key keyword)
-        v (-> pair .value neo4j->clj)
-        ]
+        v (-> pair .value neo4j->clj)]
+
     {k v}))
 
 (defmethod neo4j->clj NodeValue [^NodeValue value]
@@ -67,8 +67,8 @@
   (.asObject v))
 
 (defmethod neo4j->clj ListValue [^ListValue l]
-  (map neo4j->clj (into [] (.asList l)))
-  )
+  (map neo4j->clj (into [] (.asList l))))
+
 
 (defmethod neo4j->clj ISeq [^ISeq s]
   (map neo4j->clj s))

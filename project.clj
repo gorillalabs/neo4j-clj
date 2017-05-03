@@ -2,19 +2,18 @@
   :description "Clojure bindings for Neo4j using the Java driver"
 
   :url "https://github.com/gorillalabs/neo4j-clj"
-  :license {:name "Apache License 2.0"
-            :url  "http://www.apache.org/license/LICENSE-2.0.html"}
+  :license {:name "MIT License"}
   :deploy-repositories [["releases" :clojars]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.neo4j.driver/neo4j-java-driver "1.2.1"]
-                 ]
+                 [org.neo4j/neo4j "3.1.3"]
+                 [org.neo4j.driver/neo4j-java-driver "1.2.1"]]
+
 
 
   :profiles {:default [:base :system :user :provided :dev #_:mirrors]
              :dev     {:jvm-opts     ["-Dclojure.spec.check-asserts=true" "-XX:-OmitStackTraceInFastThrow"]
-                       :dependencies [[org.neo4j/neo4j "3.0.1"]
-                                      [org.neo4j.test/neo4j-harness "3.0.1"]]}}
+                       :dependencies [[org.neo4j.test/neo4j-harness "3.1.3"]]}}
 
 
   :scm {:name "git"
