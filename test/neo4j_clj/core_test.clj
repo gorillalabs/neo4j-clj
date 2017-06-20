@@ -3,14 +3,13 @@
             [neo4j-clj.core :refer :all]))
 
 (defquery create-test-user
-          "CREATE (u:TestUser {user})")
+          "CREATE (u:TestUser $user)")
 
 (defquery get-test-users-by-name
-          "MATCH (u:TestUser {name: {name}}) RETURN u.name as name, u.role as role")
-
+          "MATCH (u:TestUser {name: $name}) RETURN u.name as name, u.role as role")
 
 (defquery delete-test-user-by-name
-          "MATCH (u:TestUser {name: {name}}) DELETE u")
+          "MATCH (u:TestUser {name: $name}) DELETE u")
 
 (def dummy-user
   {:name "MyTestUser" :role "Dummy"})

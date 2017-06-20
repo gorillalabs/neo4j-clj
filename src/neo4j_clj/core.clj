@@ -27,7 +27,7 @@
   "In-memory databases need an uri to communicate with the bolt driver.
   Therefore, we need to get a free port."
   []
-  (str "bolt://localhost:" (get-free-port)))
+  (str "localhost:" (get-free-port)))
 
 (defn- in-memory-db
   "In order to store temporary large graphs, the embedded Neo4j database uses a
@@ -51,8 +51,8 @@
   _All_ data will be wiped after shutting down the db!"
   []
   (let [url (create-temp-uri)
-        db (in-memory-db url)]
-    (merge (create-connection url)
+        db  (in-memory-db url)]
+    (merge (create-connection (str "bolt://" url))
            {:destroy-fn (fn [] (.shutdown db))})))
 
 (defn destroy-in-memory-connection [connection]
@@ -60,6 +60,9 @@
 
 (defn get-session [connection]
   (.session (:db connection)))
+
+(defn get-transaction [session]
+  (.beginTransaction session))
 
 (defn- run-query [sess query params]
   (neo4j->clj (.run sess query params)))

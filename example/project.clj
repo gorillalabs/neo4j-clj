@@ -2,11 +2,11 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
+
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [neo4j-clj "0.3.1-SNAPSHOT"]
-                 [org.neo4j/neo4j-cypher "3.1.3"]
-                 ]
+                 [gorillalabs/neo4j-clj "0.3.2"]]
+
   :main ^:skip-aot example.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

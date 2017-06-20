@@ -41,40 +41,44 @@ After starting a new Neo4j instance (see docker command), you have to visit
 neither read nor write roles.
 
 ```clojure
-(ns example.core)
-(:require [neo4j-clj.core :as db]
-          [clojure.pprint])
+(ns example.core
+  (:require [neo4j-clj.core :as db]))
 
-(def local-db (db/create-connection "bolt://localhost:7687" "neo4j" "eJD,s(3X*vcz"))
+(def local-db
+  (db/create-connection "bolt://localhost:7687" "neo4j" "password"))
 
-(db/defquery create-user "CREATE (u:User {user})")
+(db/defquery create-user
+  "CREATE (u:user $user)")
 
-(db/defquery get-all-users "MATCH (u:User) RETURN u as user")
+(db/defquery get-all-users
+  "MATCH (u:user) RETURN u as user")
 
 (defn -main
   "Example usage of neo4j-clj"
   [& args]
+
+  ;; Using a session
   (with-open [session (db/get-session local-db)]
     (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
-  (clojure.pprint/pprint
-    (with-open [session (db/get-session local-db)]
-      (get-all-users session))))
-  ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
+  ;; Using a transaction
+  (with-open [tx (db/get-transaction local-db)]
+    (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
+)
 ```
 
 For the parameters you have two options:
 ```clojure
 ;; Wrapped object
-(db/defquery create-user "CREATE (u:User {user})")
+(db/defquery create-user "CREATE (u:User $user)")
 (create-user session {:user {:first-name ....}}
 
 (db/defquery get-users "MATCH (u:User) RETURN u as user")
 (get-users session)
-;; => {:user {...}}
+;; => ({:user {...}})
 
 ;; Extracted parameters
-(db/defquery create-user "CREATE (u:User {name: {name}, age: {age}})")
+(db/defquery create-user "CREATE (u:User {name: $name, age: $age})")
 (create-user session {:name "..." :age 42})
 
 (db/defquery get-users "MATCH (u:User) RETURN u.name as name, u.age as age")
