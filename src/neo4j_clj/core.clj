@@ -10,16 +10,7 @@
            (java.net ServerSocket)
            (java.io File)))
 
-(defn create-connection
-  "Returns a connection map from an url. Uses BOLT as the only communication
-  protocol."
-  ([url user password]
-   (let [auth (AuthTokens/basic user password)
-         db   (GraphDatabase/driver url auth)]
-     {:url url, :user user, :password password, :db db}))
-  ([url]
-   (let [db (GraphDatabase/driver url)]
-     {:url url, :db db})))
+;; Connecting to dbs
 
 (defn- get-free-port []
   (let [socket (ServerSocket. 0)
@@ -32,6 +23,19 @@
   Therefore, we need to get a free port."
   []
   (str "localhost:" (get-free-port)))
+
+(defn create-connection
+  "Returns a connection map from an url. Uses BOLT as the only communication
+  protocol."
+  ([url user password]
+   (let [auth (AuthTokens/basic user password)
+         db   (GraphDatabase/driver url auth)]
+     {:url url, :user user, :password password, :db db}))
+  ([url]
+   (let [db (GraphDatabase/driver url)]
+     {:url url, :db db})))
+
+;; In-memory for testing
 
 (defn- in-memory-db
   "In order to store temporary large graphs, the embedded Neo4j database uses a
@@ -60,14 +64,28 @@
     (merge (create-connection (str "bolt://" url))
            {:destroy-fn (fn [] (.shutdown db))})))
 
-(defn destroy-in-memory-connection [connection]
-  ((:destroy-fn connection)))
+;; Sessions and transactions
 
 (defn get-session [connection]
   (.session (:db connection)))
 
+(defn- make-success-transaction [tx]
+  (proxy [org.neo4j.driver.v1.Transaction] []
+    (run
+      ([q] (.run tx q))
+      ([q p] (.run tx q p)))
+    (success [] (.success tx))
+    (failure [] (.failure tx))
+
+    ;; We only want to auto-success to ensure persistence
+    (close []
+      (.success tx)
+      (.close tx))))
+
 (defn get-transaction [session]
-  (.beginTransaction session))
+  (make-success-transaction (.beginTransaction session)))
+
+;; Executing cypher queries
 
 (defn execute
   ([sess query params]
@@ -84,21 +102,7 @@
     ([sess] (execute sess cypher))
     ([sess params] (execute sess cypher params))))
 
-(defmacro defquery "Shortcut macro to define a named query."
-  [name query]
+(defmacro defquery
+  "Shortcut macro to define a named query."
+  [name ^String query]
   `(def ~name (create-query ~query)))
-
-(defmacro with-in-memory-db [db & body]
-  `(let [~db (create-in-memory-connection)]
-     (try
-       (println "I started an in-memory instance" ~db)
-       ~@body
-       (finally
-         (destroy-in-memory-connection ~db)))))
-
-(def success (memfn #^Transaction success))
-(def failure (memfn #^Transaction failure))
-
-(defmacro with-db-transaction [tx session & body]
-  `(with-open [~tx (.beginTransaction ~session)]
-     ~@body))
