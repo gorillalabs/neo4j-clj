@@ -71,7 +71,7 @@
 
 (defn execute
   ([sess query params]
-   (neo4j->clj (.run sess query params)))
+   (neo4j->clj (.run sess query (clj->neo4j params))))
   ([sess query]
    (neo4j->clj (.run sess query))))
 
@@ -82,7 +82,7 @@
   [cypher]
   (fn
     ([sess] (execute sess cypher))
-    ([sess params] (execute sess cypher (clj->neo4j params)))))
+    ([sess params] (execute sess cypher params))))
 
 (defmacro defquery "Shortcut macro to define a named query."
   [name query]
