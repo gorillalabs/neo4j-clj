@@ -2,7 +2,8 @@
   "This namespace contains the logic to connect to Neo4j instances,
   create and run queries as well as creating an in-memory database for
   testing."
-  (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]])
+  (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
+            [clojure.java.io :as io])
   (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction)
            (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
                                       GraphDatabaseFactory)
@@ -21,7 +22,10 @@
      {:url url, :db db})))
 
 (defn- get-free-port []
-  (.getLocalPort (ServerSocket. 0)))
+  (let [socket (ServerSocket. 0)
+        port   (.getLocalPort socket)]
+    (.close socket)
+    port))
 
 (defn- create-temp-uri
   "In-memory databases need an uri to communicate with the bolt driver.
@@ -33,11 +37,12 @@
   "In order to store temporary large graphs, the embedded Neo4j database uses a
   directory and binds to an url. We use the temp directory for that."
   [url]
-  (let [bolt (GraphDatabaseSettings$BoltConnector. "0")
-        temp (System/getProperty "java.io.tmpdir")]
+  (let [bolt   (GraphDatabaseSettings$BoltConnector. "0")
+        temp   (System/getProperty "java.io.tmpdir")
+        millis (str (System/currentTimeMillis))
+        folder (File. (.getPath (io/file temp millis)))]
     (-> (GraphDatabaseFactory.)
-        (.newEmbeddedDatabaseBuilder (File. (str temp (System/currentTimeMillis))))
-        ;; Configure db to use bolt
+        (.newEmbeddedDatabaseBuilder folder)
         (.setConfig (.type bolt) "BOLT")
         (.setConfig (.enabled bolt) "true")
         (.setConfig (.address bolt) url)
