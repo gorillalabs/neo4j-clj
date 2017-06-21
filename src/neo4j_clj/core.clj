@@ -64,8 +64,11 @@
 (defn get-transaction [session]
   (.beginTransaction session))
 
-(defn- run-query [sess query params]
-  (neo4j->clj (.run sess query params)))
+(defn execute
+  ([sess query params]
+   (neo4j->clj (.run sess query params)))
+  ([sess query]
+   (neo4j->clj (.run sess query))))
 
 (defn create-query
   "Convenience function. Takes a cypher query as input, returns a function that
@@ -73,8 +76,8 @@
   result as a map."
   [cypher]
   (fn
-    ([sess] (run-query sess cypher {}))
-    ([sess params] (run-query sess cypher (clj->neo4j params)))))
+    ([sess] (execute sess cypher))
+    ([sess params] (execute sess cypher (clj->neo4j params)))))
 
 (defmacro defquery "Shortcut macro to define a named query."
   [name query]

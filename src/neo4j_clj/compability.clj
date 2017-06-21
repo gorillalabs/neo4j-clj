@@ -4,7 +4,7 @@
   has functions to help to convert between Neo4j's data structures and Clojure"
   (:require [clojure.walk])
   (:import (org.neo4j.driver.v1 Values)
-           (org.neo4j.driver.internal InternalRecord InternalPair
+           (org.neo4j.driver.internal InternalRecord InternalPair InternalRelationship
                                       InternalStatementResult InternalNode)
            (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter
                                             NullValue ListValue MapValue)
@@ -57,7 +57,6 @@
 (defmethod neo4j->clj InternalPair [^InternalPair pair]
   (let [k (-> pair .key keyword)
         v (-> pair .value neo4j->clj)]
-
     {k v}))
 
 (defmethod neo4j->clj NodeValue [^NodeValue value]
@@ -81,6 +80,12 @@
              {:labels (.labels n)
               :id     (.id n)}))
 
+(defmethod neo4j->clj InternalRelationship [^InternalRelationship r]
+  (let [rel (.. r asValue asRelationship)]
+    {:start-id (.startNodeId rel)
+     :end-id   (.endNodeId rel)
+     :type     (.type rel)}))
+
 (defmethod neo4j->clj NullValue [n]
   nil)
 
@@ -89,8 +94,6 @@
 
 (defmethod neo4j->clj Map [^Map m]
   (transform (into {} m)))
-
-
 
 (defmethod neo4j->clj :default [x]
   x)
