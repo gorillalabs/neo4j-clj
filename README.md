@@ -8,8 +8,9 @@ The easiest way to get started with Neo4j is by running it in a docker container
 ```sh
 docker run \
     --publish=7474:7474 \
+    --publish=7687:7687 \
     --volume=$HOME/neo4j/data:/data \
-    neo4j:2.3
+    neo4j:3.2
 ```
 
 A complete guide for all kinds of scenarios can be found in the 
