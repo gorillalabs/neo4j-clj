@@ -18,9 +18,9 @@
   {:name (:name dummy-user)})
 
 (defn with-temp-db [tests]
-  (def temp-db (create-in-memory-connection))
-  (tests)
-  (destroy-in-memory-connection temp-db))
+  (let [temp-db (create-in-memory-connection)]
+    (tests)
+    (disconnect temp-db)))
 
 (use-fixtures :once with-temp-db)
 

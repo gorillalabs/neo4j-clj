@@ -12,6 +12,24 @@
 
 ;; Connecting to dbs
 
+(defn connect
+  "Returns a connection map from an url. Uses BOLT as the only communication
+  protocol."
+  ([url user password]
+   (let [auth (AuthTokens/basic user password)
+         db   (GraphDatabase/driver url auth)]
+     {:url url, :user user, :password password, :db db
+      :destroy-fn #(.close db)}))
+  ([url]
+   (let [db (GraphDatabase/driver url)]
+     {:url url, :db db, :destroy-fn #(.close db)})))
+
+(defn disconnect [db]
+  "Disconnect a connection"
+  ((:destroy-fn db)))
+
+;; In-memory for testing
+
 (defn- get-free-port []
   (let [socket (ServerSocket. 0)
         port   (.getLocalPort socket)]
@@ -23,19 +41,6 @@
   Therefore, we need to get a free port."
   []
   (str "localhost:" (get-free-port)))
-
-(defn create-connection
-  "Returns a connection map from an url. Uses BOLT as the only communication
-  protocol."
-  ([url user password]
-   (let [auth (AuthTokens/basic user password)
-         db   (GraphDatabase/driver url auth)]
-     {:url url, :user user, :password password, :db db}))
-  ([url]
-   (let [db (GraphDatabase/driver url)]
-     {:url url, :db db})))
-
-;; In-memory for testing
 
 (defn- in-memory-db
   "In order to store temporary large graphs, the embedded Neo4j database uses a
@@ -61,8 +66,8 @@
   []
   (let [url (create-temp-uri)
         db  (in-memory-db url)]
-    (merge (create-connection (str "bolt://" url))
-           {:destroy-fn (fn [] (.shutdown db))})))
+    (merge (connect (str "bolt://" url))
+           {:destroy-fn #(.shutdown db)})))
 
 ;; Sessions and transactions
 
