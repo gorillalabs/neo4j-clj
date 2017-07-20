@@ -19,6 +19,6 @@
     (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
   ;; Using a transaction
-  (with-open [tx (db/get-transaction local-db)]
+  (with-transaction local-db tx
     (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
 )

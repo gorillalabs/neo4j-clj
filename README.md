@@ -21,6 +21,8 @@ docker run \
     neo4j:3.2
 ```
 
+__You have to login once and change the password! Default is neo4j/neo4j__
+
 A complete guide for all kinds of scenarios can be found in the 
 [docs](http://neo4j.com/docs/operations-manual/current/installation/docker/).
 
@@ -54,7 +56,7 @@ neither read nor write roles.
   (:require [neo4j-clj.core :as db]))
 
 (def local-db
-  (db/create-connection "bolt://localhost:7687" "neo4j" "password"))
+  (db/connect "bolt://localhost:7687" "neo4j" "password"))
 
 (db/defquery create-user
   "CREATE (u:user $user)")
@@ -71,26 +73,35 @@ neither read nor write roles.
     (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
   ;; Using a transaction
-  (with-open [tx (db/get-transaction local-db)]
-    (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
-)
+  (with-transaction local-db tx
+    (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}}))
 ```
 
 For the parameters you have two options:
 ```clojure
 ;; Wrapped object
 (db/defquery create-user "CREATE (u:User $user)")
-(create-user session {:user {:first-name ....}}
+(create-user tx {:user {:first-name ....}}
 
 (db/defquery get-users "MATCH (u:User) RETURN u as user")
-(get-users session)
+(get-users tx)
 ;; => ({:user {...}})
 
 ;; Extracted parameters
 (db/defquery create-user "CREATE (u:User {name: $name, age: $age})")
-(create-user session {:name "..." :age 42})
+(create-user tx {:name "..." :age 42})
 
 (db/defquery get-users "MATCH (u:User) RETURN u.name as name, u.age as age")
-(get-users session)
+(get-users tx)
 ;; => ({:name "..." :age 42}, ...)
+```
+
+## Testing
+
+The test semantics are the same. Just use
+
+```clojure
+(def test-db
+  (neo4j/create-in-memory-connection))
+;; instead of (neo4j/connect url user password)
 ```

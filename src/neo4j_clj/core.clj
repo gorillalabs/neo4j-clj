@@ -111,3 +111,7 @@
   "Shortcut macro to define a named query."
   [name ^String query]
   `(def ~name (create-query ~query)))
+
+(defmacro with-transaction [connection tx & body]
+  `(with-open [~tx  (get-transaction (get-session ~connection))]
+     ~@body))

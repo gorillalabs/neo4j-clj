@@ -50,23 +50,19 @@
 ;; Transactions
 (deftest transactions-do-commit
   (testing "If using a transaction, writes are persistet"
-    (with-open [session (get-session temp-db)
-                tx      (get-transaction session)]
+    (with-transaction temp-db tx
       (execute tx "CREATE (x:test $t)" {:t {:payload 42}})))
 
   (testing "If using a transaction, writes are persistet"
-    (with-open [session (get-session temp-db)
-                tx      (get-transaction session)]
+    (with-transaction temp-db tx
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '({:x {:payload 42}})))))
 
   (testing "If using a transaction, writes are persistet"
-    (with-open [session (get-session temp-db)
-                tx      (get-transaction session)]
+    (with-transaction temp-db tx
       (execute tx "MATCH (x:test) DELETE x" {:t {:payload 42}})))
 
   (testing "If using a transaction, writes are persistet"
-    (with-open [session (get-session temp-db)
-                tx      (get-transaction session)]
+    (with-transaction temp-db tx
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '())))))
