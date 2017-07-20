@@ -1,6 +1,14 @@
 # neo4j-clj
 Clojure bindings for the Java Neo4j driver
 
+[![Build Status](https://travis-ci.org/gorillalabs/neo4j-clj.svg)](https://travis-ci.org/gorillalabs/neo4j-clj)
+
+## gorillalabs/tesla (Parent project)
+[![Dependencies Status](http://jarkeeper.com/gorillalabs/neo4j-clj/status.svg)](http://jarkeeper.com/gorillalabs.neo4j-clj)
+[![Downloads](https://jarkeeper.com/gorillalabs/neo4j-clj/downloads.svg)](https://jarkeeper.com/gorillalabs/neo4j-clj)
+[![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/neo4j-clj.svg)](https://clojars.org/gorillalabs/neo4j-clj)
+
+
 ## Neo4j survival guide
 
 The easiest way to get started with Neo4j is by running it in a docker container
