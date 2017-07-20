@@ -1,13 +1,14 @@
 # neo4j-clj
 Clojure bindings for the Java Neo4j driver
 
+[![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/neo4j-clj.svg)](https://clojars.org/gorillalabs/neo4j-clj)
 [![Build Status](https://travis-ci.org/gorillalabs/neo4j-clj.svg)](https://travis-ci.org/gorillalabs/neo4j-clj)
-
-## gorillalabs/tesla (Parent project)
 [![Dependencies Status](http://jarkeeper.com/gorillalabs/neo4j-clj/status.svg)](http://jarkeeper.com/gorillalabs.neo4j-clj)
 [![Downloads](https://jarkeeper.com/gorillalabs/neo4j-clj/downloads.svg)](https://jarkeeper.com/gorillalabs/neo4j-clj)
-[![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/neo4j-clj.svg)](https://clojars.org/gorillalabs/neo4j-clj)
 
+## gorillalabs/tesla (Parent project)
+
+[![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/tesla.svg)](https://clojars.org/gorillalabs/tesla)
 
 ## Neo4j survival guide
 
