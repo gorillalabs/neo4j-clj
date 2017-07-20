@@ -9,7 +9,7 @@
                  [org.neo4j/neo4j "3.2.2"]
                  [org.neo4j/neo4j-cypher "3.2.2"]
                  [org.neo4j.test/neo4j-harness "3.2.2"]
-                 [org.neo4j.driver/neo4j-java-driver "1.4.1"]]
+                 [org.neo4j.driver/neo4j-java-driver "1.4.2"]]
 
   :profiles {:default [:base :system :user :provided :dev #_:mirrors]
              :dev     {:jvm-opts     ["-Dclojure.spec.check-asserts=true" "-XX:-OmitStackTraceInFastThrow"]
