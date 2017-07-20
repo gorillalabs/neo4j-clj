@@ -1,4 +1,4 @@
-(defproject gorillalabs/neo4j-clj "0.3.2"
+(defproject gorillalabs/neo4j-clj "0.3.2-SNAPSHOT"
   :description "Clojure bindings for Neo4j using the Java driver"
 
   :url "https://github.com/gorillalabs/neo4j-clj"
@@ -6,10 +6,10 @@
   :deploy-repositories [["releases" :clojars]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.neo4j/neo4j "3.2.1"]
-                 [org.neo4j/neo4j-cypher "3.2.1"]
-                 [org.neo4j.test/neo4j-harness "3.2.1"]
-                 [org.neo4j.driver/neo4j-java-driver "1.4.0"]]
+                 [org.neo4j/neo4j "3.2.2"]
+                 [org.neo4j/neo4j-cypher "3.2.2"]
+                 [org.neo4j.test/neo4j-harness "3.2.2"]
+                 [org.neo4j.driver/neo4j-java-driver "1.4.1"]]
 
   :profiles {:default [:base :system :user :provided :dev #_:mirrors]
              :dev     {:jvm-opts     ["-Dclojure.spec.check-asserts=true" "-XX:-OmitStackTraceInFastThrow"]
@@ -25,7 +25,7 @@
                   ["vcs" "commit"]
                   ["vcs" "tag" "backend-develop-v"]
                   ["uberjar"]
-                  ["deploy" "releases" "cypp.one/neo4j-clj" :project/version "target/uberjar/neo4j-clj.jar"]
+                  ["deploy" "releases" "gorillalabs/neo4j-clj" :project/version "target/uberjar/neo4j-clj.jar"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]])
