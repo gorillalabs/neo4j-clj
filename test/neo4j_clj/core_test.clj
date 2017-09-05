@@ -1,6 +1,7 @@
 (ns neo4j-clj.core-test
   (:require [clojure.test :refer :all]
-            [neo4j-clj.core :refer :all]))
+            [neo4j-clj.core :refer :all])
+  (:import (org.neo4j.driver.v1.exceptions TransientException)))
 
 (defquery create-test-user
   "CREATE (u:TestUser $user)")
@@ -66,3 +67,23 @@
     (with-transaction temp-db tx
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '())))))
+
+;; Retry
+(deftest deadlocks-fail
+  (testing "When a deadlock occures,"
+    (testing "the transaction throws an Exception"
+      (is (thrown? TransientException
+                   (with-transaction temp-db tx
+                     (throw (TransientException. "" "I fail"))))))
+    (testing "the retried transaction works"
+      (let [fail-times (atom 3)]
+        (is (= :result
+               (with-retry [temp-db tx]
+                 (if (pos? @fail-times)
+                   (do (swap! fail-times dec)
+                       (throw (TransientException. "" "I fail")))
+                   :result))))))
+    (testing "the retried transaction throws after max retries"
+      (is (thrown? TransientException
+                   (with-retry [temp-db tx]
+                     (throw (TransientException. "" "I fail"))))))))
