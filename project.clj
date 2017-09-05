@@ -1,4 +1,4 @@
-(defproject gorillalabs/neo4j-clj "0.3.2"
+(defproject gorillalabs/neo4j-clj "0.3.3"
   :description "Clojure bindings for Neo4j using the Java driver"
 
   :url "https://github.com/gorillalabs/neo4j-clj"
