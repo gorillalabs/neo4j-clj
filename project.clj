@@ -5,15 +5,18 @@
   :license {:name "MIT License"}
   :deploy-repositories [["releases" :clojars]]
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.neo4j/neo4j "3.2.2"]
+  :dependencies [[org.neo4j/neo4j "3.2.2"]
                  [org.neo4j/neo4j-cypher "3.2.2"]
                  [org.neo4j.test/neo4j-harness "3.2.2"]
-                 [org.neo4j.driver/neo4j-java-driver "1.4.2"]]
+                 [org.neo4j.driver/neo4j-java-driver "1.4.2"]
+                 [clj-time "0.14.0"]
+                 ]
 
-  :profiles {:default [:base :system :user :provided :dev #_:mirrors]
-             :dev     {:jvm-opts     ["-Dclojure.spec.check-asserts=true" "-XX:-OmitStackTraceInFastThrow"]
-                       :dependencies []}}
+  :profiles {:provided {:dependencies [[org.clojure/clojure "1.8.0"]
+                                       [joplin.core "0.3.10"]]}
+             :default  [:base :system :user :provided :dev #_:mirrors]
+             :dev      {:jvm-opts     ["-Dclojure.spec.check-asserts=true" "-XX:-OmitStackTraceInFastThrow"]
+                        :dependencies []}}
 
   :scm {:name "git"
         :url  "https://github.com/gorillalabs/neo4j-clj"}
