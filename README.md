@@ -3,12 +3,6 @@ Clojure bindings for the Java Neo4j driver
 
 [![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/neo4j-clj.svg)](https://clojars.org/gorillalabs/neo4j-clj)
 [![Build Status](https://travis-ci.org/gorillalabs/neo4j-clj.svg)](https://travis-ci.org/gorillalabs/neo4j-clj)
-[![Dependencies Status](http://jarkeeper.com/gorillalabs/neo4j-clj/status.svg)](http://jarkeeper.com/gorillalabs.neo4j-clj)
-[![Downloads](https://jarkeeper.com/gorillalabs/neo4j-clj/downloads.svg)](https://jarkeeper.com/gorillalabs/neo4j-clj)
-
-## gorillalabs/tesla (Parent project)
-
-[![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/tesla.svg)](https://clojars.org/gorillalabs/tesla)
 
 ## Neo4j survival guide
 
@@ -106,3 +100,12 @@ The test semantics are the same. Just use
   (neo4j/create-in-memory-connection))
 ;; instead of (neo4j/connect url user password)
 ```
+
+## Joplin integration
+
+neo4j-clj comes equipped with support for [Joplin](https://github.com/juxt/joplin)
+for datastore migration and seeding.
+
+As we do not force our users into Joplin dependencies, you have to add [joplin.core "0.3.10"]
+to your projects dependencies yourself.
+
