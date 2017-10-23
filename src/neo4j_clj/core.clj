@@ -5,6 +5,7 @@
   (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
             [clojure.java.io :as io])
   (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction)
+           (org.neo4j.driver.v1.exceptions TransientException)
            (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
                                       GraphDatabaseFactory)
            (java.net ServerSocket)
@@ -112,6 +113,22 @@
   [name ^String query]
   `(def ~name (create-query ~query)))
 
+(defn retry-times [times body]
+  (let [res (try
+              {:result (body)}
+              (catch TransientException e#
+                (if (zero? times)
+                  (throw e#)
+                  {:exception e#})))]
+    (if (:exception res)
+      (recur (dec times) body)
+      (:result res))))
+
 (defmacro with-transaction [connection tx & body]
-  `(with-open [~tx  (get-transaction (get-session ~connection))]
+  `(with-open [~tx (get-transaction (get-session ~connection))]
      ~@body))
+
+(defmacro with-retry [[connection tx & {:keys [max-times] :or {max-times 1000}}] & body]
+  `(retry-times ~max-times
+                (fn []
+                  (with-transaction ~connection ~tx ~@body))))
