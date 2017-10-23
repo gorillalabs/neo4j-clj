@@ -1,9 +1,11 @@
-(defproject gorillalabs/neo4j-clj "0.3.3"
+(defproject gorillalabs/neo4j-clj "0.0.0"
   :description "Clojure bindings for Neo4j using the Java driver"
 
   :url "https://github.com/gorillalabs/neo4j-clj"
   :license {:name "MIT License"}
   :deploy-repositories [["releases" :clojars]]
+
+  :plugins [[com.roomkey/lein-v "6.2.0"]]
 
   :dependencies [[org.neo4j/neo4j "3.2.2"]
                  [org.neo4j/neo4j-cypher "3.2.2"]
@@ -24,11 +26,6 @@
   ;; make sure you have your ~/.lein/credentials.clj.gpg setup correctly
 
   :release-tasks [["vcs" "assert-committed"]
-                  ["change" "version" "leiningen.release/bump-version" "release"]
-                  ["vcs" "commit"]
-                  ["vcs" "tag" "backend-develop-v"]
-                  ["uberjar"]
-                  ["deploy" "releases" "gorillalabs/neo4j-clj" :project/version "target/uberjar/neo4j-clj.jar"]
-                  ["change" "version" "leiningen.release/bump-version"]
-                  ["vcs" "commit"]
+                  ["v" "update"]
+                  ["deploy" "releases"]
                   ["vcs" "push"]])
