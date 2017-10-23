@@ -6,6 +6,8 @@
   :deploy-repositories [["releases" :clojars]]
 
   :plugins [[com.roomkey/lein-v "6.2.0"]]
+  :middleware [leiningen.v/version-from-scm
+               leiningen.v/add-workspace-data]
 
   :dependencies [[org.neo4j/neo4j "3.2.2"]
                  [org.neo4j/neo4j-cypher "3.2.2"]
