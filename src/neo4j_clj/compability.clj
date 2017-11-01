@@ -8,7 +8,7 @@
            (org.neo4j.driver.internal InternalRecord InternalPair InternalRelationship
                                       InternalStatementResult InternalNode)
            (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter
-                                            NullValue ListValue MapValue)
+                                            NullValue ListValue MapValue RelationshipValue)
            (org.neo4j.cypher.internal.javacompat ExecutionResult)
            (java.util Map List)
            (clojure.lang ISeq)))
@@ -60,6 +60,9 @@
 
 (defmethod neo4j->clj NodeValue [^NodeValue value]
   (transform (into {} (.asMap value))))
+
+(defmethod neo4j->clj RelationshipValue [^RelationshipValue value]
+  (transform (into {} (.asMap (.asRelationship value)))))
 
 (defmethod neo4j->clj ScalarValueAdapter [^ScalarValueAdapter v]
   (.asObject v))
