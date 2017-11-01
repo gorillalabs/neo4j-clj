@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file. This change
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.0...v0.4.1)
 
 ### Added
-- Support for RelationshipType, aka properties on relationsships.
+- Support for RelationshipType, aka properties on relationships.
 
 ## [0.4.0] - 2017-10-23
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.3.3...v0.4.0)
