@@ -10,7 +10,7 @@
   "MATCH (u:TestUser {name: $name}) RETURN u.name as name, u.role as role")
 
 (defquery get-test-users-relationship
-          "MATCH (u:TestUser {name: $name})-[s:SELF]->() RETURN s")
+          "MATCH (u:TestUser {name: $name})-[s:SELF]->() RETURN collect(u) as ucoll, collect(s) as scoll")
 
 (defquery delete-test-user-by-name
   "MATCH (u:TestUser {name: $name}) DETACH DELETE u")
@@ -40,7 +40,7 @@
 
     (testing "You can get a relationship"
       (is (= (first (get-test-users-relationship session name-lookup))
-             {:s {:reason "to test"}}
+             {:ucoll (list dummy-user) :scoll (list {:reason "to test"})}
              )))
 
     (testing "You can remove a user by name"

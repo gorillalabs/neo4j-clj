@@ -83,10 +83,7 @@
               :id     (.id n)}))
 
 (defmethod neo4j->clj InternalRelationship [^InternalRelationship r]
-  (let [rel (.. r asValue asRelationship)]
-    {:start-id (.startNodeId rel)
-     :end-id   (.endNodeId rel)
-     :type     (.type rel)}))
+  (neo4j->clj (.asValue r)))
 
 (defmethod neo4j->clj NullValue [n]
   nil)
