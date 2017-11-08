@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file. This change
 
 
 ## [Unreleased]
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.1...HEAD)
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.2...HEAD)
+
+## [0.4.2] - 2017-11-08
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.1...v0.4.2)
+
+### Changed
+- Fixed conversion of InternalRelationshipType, aka properties on relationships in a collection.
+
 
 ### Changed
 
