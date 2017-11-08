@@ -4,13 +4,16 @@
   (:import (org.neo4j.driver.v1.exceptions TransientException)))
 
 (defquery create-test-user
-  "CREATE (u:TestUser $user)")
+  "CREATE (u:TestUser $user)-[:SELF {reason: \"to test\"}]->(u)")
 
 (defquery get-test-users-by-name
   "MATCH (u:TestUser {name: $name}) RETURN u.name as name, u.role as role")
 
+(defquery get-test-users-relationship
+          "MATCH (u:TestUser {name: $name})-[s:SELF]->() RETURN s")
+
 (defquery delete-test-user-by-name
-  "MATCH (u:TestUser {name: $name}) DELETE u")
+  "MATCH (u:TestUser {name: $name}) DETACH DELETE u")
 
 (def dummy-user
   {:name "MyTestUser" :role "Dummy"})
@@ -34,6 +37,11 @@
     (testing "You can get a created user by name"
       (is (= (get-test-users-by-name session name-lookup)
              (list dummy-user))))
+
+    (testing "You can get a relationship"
+      (is (= (first (get-test-users-relationship session name-lookup))
+             {:s {:reason "to test"}}
+             )))
 
     (testing "You can remove a user by name"
       (delete-test-user-by-name session name-lookup))
