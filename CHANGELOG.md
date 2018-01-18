@@ -3,10 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 
 ## [Unreleased]
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.3...HEAD)
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.5.0...HEAD)
 
-## [0.4.3] - 2018-01-08
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.2...v0.4.3)
+## [0.5.0] - 2018-01-08
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.2...v0.5.0)
 
 ### Changed
 - Updated to new dependency versions
