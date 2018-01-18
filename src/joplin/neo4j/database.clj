@@ -49,6 +49,10 @@
     (with-connection db tx
                      (map :n.id (run-query tx "MATCH (n:migration) RETURN n.id ORDER BY n.id")))))
 
+
+(defmethod print-method Database [v ^java.io.Writer w]
+  (.write w (str "#joplin.neo4j.database.Database{:url " (.url v) ", :username " (.username v) "}")))
+
 ;; ============================================================================
 ;; Joplin interface
 
