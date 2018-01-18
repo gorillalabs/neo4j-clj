@@ -9,11 +9,11 @@
   :middleware [leiningen.v/version-from-scm
                leiningen.v/add-workspace-data]
 
-  :dependencies [[org.neo4j/neo4j "3.3.0"]
-                 [org.neo4j/neo4j-cypher "3.3.0"]
-                 [org.neo4j.test/neo4j-harness "3.3.0"]
-                 [org.neo4j.driver/neo4j-java-driver "1.4.4"]
-                 [clj-time "0.14.1"]
+  :dependencies [[org.neo4j/neo4j "3.3.1"]
+                 [org.neo4j/neo4j-cypher "3.3.1"]
+                 [org.neo4j.test/neo4j-harness "3.3.1"]
+                 [org.neo4j.driver/neo4j-java-driver "1.5.0"]
+                 [clj-time "0.14.2"]
                  ]
 
   :profiles {:provided {:dependencies [[org.clojure/clojure "1.8.0"]
