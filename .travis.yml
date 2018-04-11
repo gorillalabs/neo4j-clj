@@ -2,7 +2,7 @@ language: clojure
 script: lein test
 jdk:
   - oraclejdk8
-  - oraclejdk9
+#  - oraclejdk9 # Running into issue similar to this: https://github.com/neo4j/neo4j-ogm/issues/319
 notifications:
   slack:
     secure: NvOm/bFX0q/FUXaonCfdf4wMITNRJ55d3Y8iSk5EKneR1a3ifs1mk1tNVsaCY4CgjAuhufzmR6q5W7IgP/IoBarvBk47kTVva2niwCJ3lHsoD6fD7g5T7hYq1o7WYPX230etsS2LBJwfvryYj4ZdV+d7plkvw+mnmFTLXGcUXpIsvrps1IPTUrKINWH1OGtt+NKlfN1ziImR+zRy9Spp84z55s3Bs9VzNSO0zruqIt9TlKdYh+aQ45ry9UE9IdMkLBYbeP1UHcu4bSTEE+Wp9IkqZJXk8oTbts6JoswaRWUD5K+Y96O8kn1Y3JVIfQkH5v1kYIMGsGlVKS9Q4bmT0pfXCwzkK3TdGEYamngw1KR2g/hIbQUDqq7GZOpq9y9gLJ+EGw8Q2MKZhHCDbrpPwJAJ9YcXze3xOVECBJbd0XZL4z3/CwLfnqlk61WC7A8ZbcekNo6o3Q4RBEz9QjwwZU5Wa5XN2mBODKoyWF+CzfvTyP7cjAJQPcghnzMx96mA/pryNLYz9yl0NqyrENuyXDd0FzWy0QJIJzwS9Suc+T7hWARC9w+cOxhGH7SNNldxz2SQCZZixN1nE/a9J63wVc1AfqvT77L56VxqCUG3kKRoN3WbATL721nxrv3vY9wEQNRsgsq5s/Uxu5vFhtclrwYi56wlttwcJyslG28zIjg=
