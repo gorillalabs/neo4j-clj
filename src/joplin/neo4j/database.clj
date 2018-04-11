@@ -35,20 +35,19 @@
 
   (add-migration-id [db id]
     (with-connection db tx
-                     (run-query tx
-                                "CREATE (n:migration {id: $id, created: $created})"
-                                {:id id :created (tc/to-long (t/now))})))
+      (run-query tx
+                 "CREATE (n:migration {id: $id, created: $created})"
+                 {:id id :created (tc/to-long (t/now))})))
 
   (remove-migration-id [db id]
     (with-connection db tx
-                     (run-query tx
-                                "MATCH (n:migration {id: $id}) DETACH DELETE n"
-                                {:id id})))
+      (run-query tx
+                 "MATCH (n:migration {id: $id}) DETACH DELETE n"
+                 {:id id})))
 
   (applied-migration-ids [db]
     (with-connection db tx
-                     (map :n.id (run-query tx "MATCH (n:migration) RETURN n.id ORDER BY n.id")))))
-
+      (map :n.id (run-query tx "MATCH (n:migration) RETURN n.id ORDER BY n.id")))))
 
 (defmethod print-method Database [v ^java.io.Writer w]
   (.write w (str "#joplin.neo4j.database.Database{:url " (.url v) ", :username " (.username v) "}")))

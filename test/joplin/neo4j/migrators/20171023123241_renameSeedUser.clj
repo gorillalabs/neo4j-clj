@@ -3,13 +3,13 @@
   (:require [neo4j-clj.core :refer :all]))
 
 (defquery alter-seed-user-name
-          "MATCH (u:SeedUser)
+  "MATCH (u:SeedUser)
            SET u.name=$name")
 
 (defn up [db]
   (with-connection db session
-                   (alter-seed-user-name session {:name "MigratedSeeder"})))
+    (alter-seed-user-name session {:name "MigratedSeeder"})))
 
 (defn down [db]
   (with-connection db session
-                   (alter-seed-user-name session {:name "SeedUser"})))
+    (alter-seed-user-name session {:name "SeedUser"})))

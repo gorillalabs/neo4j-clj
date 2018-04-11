@@ -3,20 +3,18 @@
   (:require [neo4j-clj.core :refer :all]))
 
 (defquery create-seed-user
-          "CREATE (u:SeedUser $user)")
+  "CREATE (u:SeedUser $user)")
 
 (defquery remove-seed-user
-          "MATCH (u:SeedUser) DELETE u")
-
+  "MATCH (u:SeedUser) DELETE u")
 
 (def seed-user
   {:name "SeedUser" :role "Seeder"})
 
-
 (defn up [db]
   (with-connection db session
-                   (create-seed-user session {:user seed-user})))
+    (create-seed-user session {:user seed-user})))
 
 (defn down [db]
   (with-connection db session
-                   (remove-seed-user session)))
+    (remove-seed-user session)))

@@ -1,9 +1,8 @@
 (ns joplin.neo4j.seeds
   (:require [neo4j-clj.core :refer :all]))
 
-
 (defquery create-seed-user
-          "CREATE (u:SeedUser $user)")
+  "CREATE (u:SeedUser $user)")
 
 (def seed-user
   {:name "SeedUser" :role "Seeder"})
