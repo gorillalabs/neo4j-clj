@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This change
 ## [Unreleased]
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.5.0...HEAD)
 
+### Changed
+[Moved dependency to neo4j-harness](https://github.com/gorillalabs/neo4j-clj/issues/5). If you relied on neo4j-clj to bring this dependency so far, you need to add it to your project yourself. It should be a dev dependency only. 
+
+
 ## [0.5.0] - 2018-01-08
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.2...v0.5.0)
 
