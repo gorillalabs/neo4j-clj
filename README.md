@@ -5,6 +5,9 @@ Clojure bindings for the Java Neo4j driver
 [![Build Status](https://travis-ci.org/gorillalabs/neo4j-clj.svg)](https://travis-ci.org/gorillalabs/neo4j-clj)
 [![Dependencies Status](https://versions.deps.co/gorillalabs/neo4j-clj/status.svg)](https://versions.deps.co/gorillalabs/neo4j-clj)
 [![Downloads](https://versions.deps.co/gorillalabs/neo4j-clj/downloads.svg)](https://versions.deps.co/gorillalabs/neo4j-clj)
+![Github commits (since latest release)](https://img.shields.io/github/commits-since/gorillalabs/neo4j-clj/latest.svg)
+
+
 
 ## Neo4j survival guide
 
