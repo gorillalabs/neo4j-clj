@@ -1,64 +1,66 @@
 # neo4j-clj
-Clojure bindings for the Java Neo4j driver
+Clojuresque client to Neo4j database, based upon the bolt protocol.
 
 [![Clojars Project](https://img.shields.io/clojars/v/gorillalabs/neo4j-clj.svg)](https://clojars.org/gorillalabs/neo4j-clj)
 [![Build Status](https://travis-ci.org/gorillalabs/neo4j-clj.svg)](https://travis-ci.org/gorillalabs/neo4j-clj)
 [![Dependencies Status](https://versions.deps.co/gorillalabs/neo4j-clj/status.svg)](https://versions.deps.co/gorillalabs/neo4j-clj)
 [![Downloads](https://versions.deps.co/gorillalabs/neo4j-clj/downloads.svg)](https://versions.deps.co/gorillalabs/neo4j-clj)
 
+neo4j-clj is a clojure client library to the [Neo4j graph database](https://neo4j.com/),
+relying on the [Bolt protocol](https://boltprotocol.org/).
 
 
-## Neo4j survival guide
+## Features
 
-The easiest way to get started with Neo4j is by running it in a docker container
+This library provides a clojuresque way to deal with connections, sessions, transactions
+and [Cypher](https://www.opencypher.org/) queries.
 
-```sh
-docker run \
-    --publish=7474:7474 \
-    --publish=7687:7687 \
-    --volume=$HOME/neo4j/data:/data \
-    neo4j:3.3
-```
 
-__You have to login once and change the password! Default is neo4j/neo4j__
+## Status
 
-A complete guide for all kinds of scenarios can be found in the 
-[docs](http://neo4j.com/docs/operations-manual/current/installation/docker/).
+neo4j-clj is in active use at our own projects,
+but it's not a feature complete client library in every possible sense.
 
-The Neo4j instance can be accessed under [localhost:7474](http://localhost:7474). The
-web interface is great and provides a shell, example queries, overviews, settings etc.
+You might choose to issue new feature requests,
+or clone the repo to add the feature and create a PR.
 
-### Trouble-shooting
+If you'd like to ask a question, you might want to
+join our [Gorillalabs Slack Group]().
+Ask right away in the #neo4j-clj channel.
 
-One thing that might occur often: If you don't provide a SSL cert, Neo4j creates it's
-own every restart. This leads to problems if you restart the server often (you'll get
-a Java exception). You can force the Neo4j driver to forget the old container and 
-accept the new one by
 
-```sh
-rm ~/.neo4j/known_hosts
-```
+We appreciate any help on the open source projects we provide.
 
-## Overview
 
-This library provides functions to interact with the database over the binary bolt
-protocol. Furthermore, it provides an in-memory database for tests.
+## Example usage
 
-### Example usage
+Throughout the examples, we assume you're having a Neo4j instance up and running.
+See our [Neo4j survival guide](docs/neo4j) for help on that.
 
-After starting a new Neo4j instance (see docker command), you have to visit 
-[localhost:7474](http://localhost:7474) to set a new password. The default user has
-neither read nor write roles.
+You can clone our repository and run the [example](example/) for yourself.
+
 
 ```clojure
 (ns example.core
   (:require [neo4j-clj.core :as db]))
 
+;; first of all, connect to a Neo4j instance using URL, user and password credentials.
+;; Remember not to check in credentials into source code repositories, but use environment variables
+;; instead.
+
 (def local-db
   (db/connect "bolt://localhost:7687" "neo4j" "password"))
 
+;; We're big fans of using Strings to represent Cypher queries, and not wrap Cypher into some
+;; other data structure to make things more complicated then necessary. So simply defquery your query...
+
 (db/defquery create-user
   "CREATE (u:user $user)")
+  
+;; ... and you'll get a function `create-user` to call with a session and the parameters. See below.  
+
+;; Define any other queries you'll need. I'd suggest to keep all the Cypher queries in a separate namespace,
+;; but hey, that's up to you.
 
 (db/defquery get-all-users
   "MATCH (u:user) RETURN u as user")
@@ -72,9 +74,48 @@ neither read nor write roles.
     (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
   ;; Using a transaction
-  (with-transaction local-db tx
+  (db/with-transaction local-db tx
     (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}}))
 ```
+
+## In-depth look
+
+### Connection
+
+First of all, you need to connect to the database.
+
+```clojure
+(db/connect "bolt://localhost:7687" "neo4j" "password")
+```
+
+### Session
+
+Everything on the Bolt protocol is organized in a session. neo4j-clj uses the
+standard `with-open` to handle lexical-scoped sessions.
+
+```clojure
+(with-open [session (db/get-session local-db)]
+  ;; ... use session here
+  )
+```
+
+### Transaction
+
+neo4j-clj can also handle transactions (on top of sessions) by utilizing a 
+`with-transaction`-macro.
+
+```clojure
+(db/with-transaction local-db tx
+   ;; run queries within transaction
+)
+```
+
+`local-db` is the Neo4j instance you're connected to.
+`tx` is the symbol the transaction is bound to. You might use
+the `tx` transaction for query functions. 
+
+### Cypher queries
+
 
 For the parameters you have two options:
 ```clojure
