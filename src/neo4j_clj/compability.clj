@@ -5,11 +5,21 @@
   (:require [clojure.walk]
             [clojure.string :as string])
   (:import (org.neo4j.driver.v1 Values)
-           (org.neo4j.driver.internal InternalRecord InternalPair InternalRelationship
-                                      InternalStatementResult InternalNode)
-           (org.neo4j.driver.internal.value NodeValue ScalarValueAdapter
-                                            NullValue ListValue MapValue RelationshipValue)
-           (org.neo4j.cypher.internal.javacompat ExecutionResult)
+           (org.neo4j.driver.internal
+            InternalRecord
+            InternalPair
+            InternalRelationship
+            InternalStatementResult
+            InternalNode)
+           (org.neo4j.driver.internal.value
+            NodeValue
+            NullValue
+            ListValue
+            MapValue
+            RelationshipValue
+            StringValue)
+           (org.neo4j.cypher.internal.javacompat
+            ExecutionResult)
            (java.util Map List)
            (clojure.lang ISeq)))
 
@@ -28,10 +38,10 @@
 (defmulti neo4j->clj
   "## Convert from Neo4j
 
-          Neo4j returns results as `StatementResults`, which contain `InternalRecords`,
-          which contain `InternalPairs` etc. Therefore, this multimethod recursively
-          calls itself with the extracted content of the data structure until we have
-          values, lists or `nil`."
+                  Neo4j returns results as `StatementResults`, which contain `InternalRecords`,
+                  which contain `InternalPairs` etc. Therefore, this multimethod recursively
+                  calls itself with the extracted content of the data structure until we have
+                  values, lists or `nil`."
   class)
 
 (defn transform [m]
@@ -64,7 +74,7 @@
 (defmethod neo4j->clj RelationshipValue [^RelationshipValue value]
   (transform (into {} (.asMap (.asRelationship value)))))
 
-(defmethod neo4j->clj ScalarValueAdapter [^ScalarValueAdapter v]
+(defmethod neo4j->clj StringValue [^StringValue v]
   (.asObject v))
 
 (defmethod neo4j->clj ListValue [^ListValue l]

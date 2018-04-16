@@ -11,7 +11,7 @@
 
   :dependencies [[org.neo4j/neo4j "3.3.4"]
                  [org.neo4j/neo4j-cypher "3.3.4"]
-                 [org.neo4j.driver/neo4j-java-driver "1.5.1"]
+                 [org.neo4j.driver/neo4j-java-driver "1.6.0-beta01"]
                  [clj-time "0.14.3"]]
 
   :profiles {:provided     {:dependencies [[org.clojure/clojure "1.9.0"]
