@@ -25,7 +25,7 @@ You might choose to issue new feature requests,
 or clone the repo to add the feature and create a PR.
 
 If you'd like to ask a question, you might want to
-join our [Gorillalabs Slack Group]().
+join our [Gorillalabs Slack Group](https://gorillalabs.slack.com).
 Ask right away in the #neo4j-clj channel.
 
 
