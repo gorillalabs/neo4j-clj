@@ -4,12 +4,14 @@
   testing."
   (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
             [clojure.java.io :as io])
-  (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction)
+  (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction Config)
            (org.neo4j.driver.v1.exceptions TransientException)
            (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
                                       GraphDatabaseFactory)
            (java.net ServerSocket)
-           (java.io File)))
+           (java.io File)
+           (org.neo4j.driver.internal.logging ConsoleLogging)
+           (java.util.logging Level)))
 
 ;; Connecting to dbs
 
@@ -17,12 +19,18 @@
   "Returns a connection map from an url. Uses BOLT as the only communication
   protocol."
   ([url user password]
-   (let [auth (AuthTokens/basic user password)
-         db   (GraphDatabase/driver url auth)]
-     {:url url, :user user, :password password, :db db
+   (let [auth   (AuthTokens/basic user password)
+         config (-> (Config/build)
+                    (.withLogging (ConsoleLogging. Level/ALL))
+                    (.toConfig))
+         db     (GraphDatabase/driver url auth config)]
+     {:url        url, :user user, :password password, :db db
       :destroy-fn #(.close db)}))
   ([url]
-   (let [db (GraphDatabase/driver url)]
+   (let [config (-> (Config/build)
+                    (.withLogging (ConsoleLogging. Level/ALL))
+                    (.toConfig))
+         db     (GraphDatabase/driver url config)]
      {:url url, :db db, :destroy-fn #(.close db)})))
 
 (defn disconnect [db]
@@ -51,6 +59,8 @@
         temp   (System/getProperty "java.io.tmpdir")
         millis (str (System/currentTimeMillis))
         folder (File. (.getPath (io/file temp millis)))]
+    (println "temp: " temp)
+    (println "folder: " folder)
     (-> (GraphDatabaseFactory.)
         (.newEmbeddedDatabaseBuilder folder)
         (.setConfig (.type bolt) "BOLT")
