@@ -114,15 +114,70 @@ neo4j-clj can also handle transactions (on top of sessions) by utilizing a
 `tx` is the symbol the transaction is bound to. You might use
 the `tx` transaction for query functions. 
 
+You do not need to have everything inside a `with-transaction` block,
+as all statements in a session are wrapped in transactions anyhow
+(see [Sessions and Transactions](https://neo4j.com/docs/developer-manual/current/drivers/sessions-transactions/)). 
+
+You fail transactions by throwing an Exception.
+
 ### Cypher queries
 
+You create new queries using `defquery`. We strongly belief that using Cypher
+as a String directly in your code comes with a couple of advantages.
 
-For the parameters you have two options:
+Both paramaters and return values are transformed from Clojure datastructures
+into Neo4j types. That transformation is done transparently, so you won't have
+to deal with that.
+
+#### Parameters
+
+For some / most queries you need to supply some parameters. Just include a
+variable into your Cypher query using the `$` notation or the `{}` notation,
+and provide a Clojure map of variables to the query:
+
+
 ```clojure
-;; Wrapped object
-(db/defquery create-user "CREATE (u:User $user)")
-(create-user tx {:user {:first-name ....}}
+(db/defquery users-by-age "MATCH (u:User {age: $age}) RETURN u as user")
+(users-by-age tx {:age 42})
+```
 
+is equivalent to
+
+```clojure
+(db/defquery users-by-age "MATCH (u:User {age: {age}}) RETURN u as user")
+(users-by-age tx {:age 42})
+```
+
+A query will always return a collection. Here, it will return `({:user {...}})`,
+i.e. a collection of maps with the user-key populated.
+
+Think of it as a map per result row.
+
+You can have more than one parameter in your map:
+
+```clojure
+(db/defquery create-user "CREATE (u:User {name: $name, age: $age})")
+(create-user tx {:name "..." :age 42})
+```
+
+And you can also nest paramters:
+
+```clojure
+(db/defquery create-user "CREATE (u:User $user)")
+(create-user tx {:user {:name "..." :age 42}})
+```
+and un-nest them as necessary:
+
+```clojure
+(db/defquery create-user "CREATE (u:User {name : {user}.name})")
+(create-user tx {:user {:name "..." :age 42}})
+```
+
+
+
+<!--
+
+```clojure
 (db/defquery get-users "MATCH (u:User) RETURN u as user")
 (get-users tx)
 ;; => ({:user {...}})
@@ -135,6 +190,17 @@ For the parameters you have two options:
 (get-users tx)
 ;; => ({:name "..." :age 42}, ...)
 ```
+
+#### Return values
+
+-->
+
+
+## Caveats
+
+One thing you cannot do: Neo4j cannot cope with dashes really well (you need to escape them),
+so the Clojure kebab-case style is not really acceptable.
+
 
 ## Testing
 
