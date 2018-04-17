@@ -24,12 +24,8 @@ but it's not a feature complete client library in every possible sense.
 You might choose to issue new feature requests,
 or clone the repo to add the feature and create a PR.
 
-If you'd like to ask a question, you might want to
-join our [Gorillalabs Slack Group](https://gorillalabs.slack.com).
-Ask right away in the #neo4j-clj channel.
-
-
-We appreciate any help on the open source projects we provide.
+We appreciate any help on the open source projects we provide. See [Development section](#development) below for more info
+on how to build your own version.
 
 
 ## Example usage
@@ -196,21 +192,6 @@ and un-nest them as necessary:
 -->
 
 
-## Caveats
-
-One thing you cannot do: Neo4j cannot cope with dashes really well (you need to escape them),
-so the Clojure kebab-case style is not really acceptable.
-
-
-## Testing
-
-The test semantics are the same. Just use
-
-```clojure
-(def test-db
-  (neo4j/create-in-memory-connection))
-;; instead of (neo4j/connect url user password)
-```
 
 ## Joplin integration
 
@@ -220,3 +201,28 @@ for datastore migration and seeding.
 As we do not force our users into Joplin dependencies, you have to add [joplin.core "0.3.10"]
 to your projects dependencies yourself.
 
+## Caveats
+
+Neo4j cannot cope with dashes really well (you need to escape them),
+so the Clojure kebab-case style is not really acceptable.
+
+
+## Development
+
+We appreciate any help on our open source projects. So, feel free to fork and clone this repository.
+
+We use [leiningen](https://leiningen.org/). So, after you've cloned your repo you should be able to run 'lein test' to
+run the tests sucessfully.
+
+### Testing
+
+
+For testing purposes, we use an im-memory database, which we address using the bolt protocol.
+
+```clojure
+(def test-db
+  (neo4j/create-in-memory-connection))
+;; instead of (neo4j/connect url user password)
+```
+
+So, you can easily run integration tests on your stuff.
