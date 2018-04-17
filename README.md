@@ -187,11 +187,27 @@ and un-nest them as necessary:
 ;; => ({:name "..." :age 42}, ...)
 ```
 
-#### Return values
 
 -->
 
+#### Return values
 
+The result of a query is a list, even if your query returns a single item. Each "result row" is one map in that sequence
+returned. 
+
+The values are provided using the ususal Clojure datastructures, no need to wrap/unwrap stuff. That's handled for you by
+neo4j-clj.
+
+I'd like to elaborarte a little on the handling of node/edge labels. You can run a query labels like this:
+
+```clojure
+(db/defquery get-users "MATCH (u:User) RETURN u as user,labels(u) as labels")
+(get-users tx)
+```
+
+and this will return a collection of maps with two keys: `user` and `labels` where `labels` are a collection of labels
+associated with the nodes. At the moment, `labels` are not sets! It's up to you to convert collections into appropriate
+types yourself (because we just do not know on the neo4j-clj level), and this is especially true for `labels`.
 
 ## Joplin integration
 
