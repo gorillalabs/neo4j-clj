@@ -9,7 +9,7 @@ _**On designing a 'simple' interface to the Neo4j graph database.**_
 
 ---
 
-While creating a platform where humans and AI collaborate to detect and mitigate Cyber Security Threats at [CYPP](https://www.cypp.de), we chose to use [Clojure](https://clojure.org/) and [Neo4j](https://neo4j.com/) as part of our toolstack. To do so, we created a new driver library (around the Java Neo4j driver), following the Clojuresque way of making simple things easy. And we chose to share it, to co-develop it under the Gorillalabs organization. Follow along to understand our motivation, get to know our design decisions, and see examples. If you choose a similar tech stack, this should give you a head start.
+While creating a platform where humans and AI collaborate to detect and mitigate Cyber Security Threats at [CYPP](https://www.cypp.de), we chose to use [Clojure](https://clojure.org/) and [Neo4j](https://neo4j.com/) as part of our tech stack. To do so, we created a new driver library (around the Java Neo4j driver), following the Clojuresque way of making simple things easy. And we chose to share it, to co-develop it under the Gorillalabs organization. Follow along to understand our motivation, get to know our design decisions, and see examples. If you choose a similar tech stack, this should give you a head start.
 
 ## Who we are
 
@@ -17,34 +17,34 @@ While creating a platform where humans and AI collaborate to detect and mitigate
 
 I ([@Chris_Betz on twitter](https://twitter.com/Chris_Betz), [@chrisbetz on Github](https://github.com/chrisbetz)) created gorillalabs to host [Sparkling](https://github.com/gorillalabs/sparkling), a Clojure library for Apache Spark. Coworkers joined in, and now Gorillalabs brings together people and code from different employers to create a neutral collaboration platform. I work at CYPP, simplifying cyber security for mid-sized companies.
 
-Most of Gorillalabs projects stem from the urge to use the best tools available for a job, and make them work in our environment. That's the fundamental idea and the start of our organization. And for our project at CYPP, using Clojure and Neo4j was the best fit.
+Most of Gorillalabs projects stem from the urge to use the best tools available for a job and make them work in our environment. That's the fundamental idea and the start of our organization. And for our project at CYPP, using Clojure and Neo4j was the best fit.
 
 ## Why Clojure?
 
 I started using Common LISP in the 90ies, moved to Java development for a living, and switched to using Clojure in production in 2011 as a good synthesis of the two worlds. And, while constantly switching roles from designing and developing software to managing software development back and forth, I specialized in delivering research-heavy projects.
 
-For many of those projects, Clojure has two nice properties: First, it comes with a set of immutable data structures (reducing errors a lot, making it easier to evolve the domain model). And second, with the combination of ClojureScript and Clojure, you can truely use one language in backend and frontend code. Although you need to understand different concepts on both ends, with your tooling staying the same, it is easier to develop vertical (or feature) slices instead of horizontal layers. Check out my EuroClojure 2017 talk on that, if you're interested.
+For many of those projects, Clojure has two nice properties: First, it comes with a set of immutable data structures (reducing errors a lot, making it easier to evolve the domain model). And second, with the combination of ClojureScript and Clojure, you can truly use one language in backend and frontend code. Although you need to understand different concepts on both ends, with your tooling staying the same, it is easier to develop vertical (or feature) slices instead of horizontal layers. Check out my EuroClojure 2017 talk on that, if you're interested.
 
 [![EuroClojure 2017 talk](http://img.youtube.com/vi/G1JWYxvucZ4/0.jpg)](https://www.youtube.com/watch?v=G1JWYxvucZ4)
 
 
 ## Graphs are everywhere - so make use of them
 
-For threat hunting, i.e. the process of detecting Cyber Security threats in an organisation, graphs are a natural data modelling tool. The most obvious graph is the one where computers are connected through TCP/IP connections. You can find malicious behaviour if one of your computers shows unwanted connections.
+For threat hunting, i.e. the process of detecting Cyber Security threats in an organisation, graphs are a natural data modelling tool. The most obvious graph is the one where computers are connected through TCP/IP connections. You can find malicious behaviour if one of your computers shows unwanted connections. (Examples are over-simplified here.)
 
 ![Graph of computers connected](assets/graph_hosts.svg)
 
-But that's just the 30.000-feet view. In fact, it's processes on computers connected. And you see malicious behaviour if a process binds to an unusual port.
+But that's just the 30.000-feet view. In fact, connections are between processes running on computers. And you see malicious behaviour if a process binds to an unusual port.
 
 ![Graph of computers connected through processes](assets/graph_hosts_processes.svg)
 
-Processes are running with a certain set of priviledges defined by the "user" runnning the process. Again, it's suspicious if a user who should be unpriviledged started a process listening for a inbound connection.
+Processes are running with a certain set of privileges defined by the "user" running the process. Again, it's suspicious if a user who should be unprivileged started a process listening for an inbound connection.
 
-![Graph of computers connected trough processes run by users](assets/graph_hosts_processes_users.svg)
+![Graph of computers connected through processes run by users](assets/graph_hosts_processes_users.svg)
 
-You get the point: Graphs are everywhere, and they help us cope with threats in a networked world. Even so our examples are over-simplified here.
+You get the point: Graphs are everywhere, and they help us cope with threats in a networked world.
 
-Throught our quest for the best solution around, we experimented with other databases and query languages, but we came to Neo4j and Cypher. First, it's a production quality database solution, and second, it has a query language you really can use. We used [TinkerPop/Gremlin](http://tinkerpop.apache.org/gremlin.html) before, but found it not easy to use for simple things, and really hard for complex queries.
+Throughout our quest for the best solution around, we experimented with other databases and query languages, but we came to Neo4j and Cypher. First, it's a production quality database solution, and second, it has a query language you really can use. We used [TinkerPop/Gremlin](http://tinkerpop.apache.org/gremlin.html) before, but found it not easy to use for simple things, and really hard for complex queries.
 
 ## Why we created a new driver
 
@@ -114,10 +114,10 @@ However, this decision has some drawbacks. There's no compiler support, no IDE c
 Each query function will return a list. Even if it's empty. There's no convenience function for creating queries to get a single object (for something like `host-by-id`). If you know there's only one, pick it using `first`.
 
 
-### Relying on the Java driver, but working with Clojure datastructures
+### Relying on the Java driver, but working with Clojure data structures
 
-We just make use of the Java driver, so basically neo4j-clj is only a thin wrapper. However, we wanted to be able to live in the Clojure world
-as much as possible. To us, that ment we need to interact with Neo4j using Clojure datastructures. You saw that in the first example, where a query function retuns a list of maps.
+We just make use of the Java driver, so basically, neo4j-clj is only a thin wrapper. However, we wanted to be able to live in the Clojure world
+as much as possible. To us, that meant we need to interact with Neo4j using Clojure datastructures. You saw that in the first example, where a query function returns a list of maps.
 
 However, you can also parameterize your queries using maps:
 
@@ -146,7 +146,7 @@ Nice thing is, you can easily test these queries in the Neo4j browser if you set
 :param host: {"id": "InnenstadtTätigKoennen"}
 ```
 
-### Joplin integration built in
+### Joplin integration built-in
 
 We're fans of having seeding and migration code for the database in our version control. Thus, we use [Joplin](https://github.com/juxt/joplin) and we suggest, you do, too. That's why we built Joplin support right into neo4j-clj.
 
@@ -155,8 +155,8 @@ With Joplin, you can write migrations and seed functions to populate your databa
 First, Joplin migrates your database, if it isn't at latest stage (`path-to-joplin-neo4j-migrators` points to a folder of migration files, which are applied in alphabetical order):
 
 ```clojure
-(:require '[joplin.core :as joplin]) ;; require Joplin itself and
-(:require ‘[joplin.neo4j.database])  ;; neo4j-clj Joplin adapter
+(require '[joplin.core :as joplin]) ;; require Joplin itself and
+(require '[joplin.neo4j.database])  ;; neo4j-clj Joplin adapter
 
 
 (joplin/migrate-db {:db {:type :neo4j,
@@ -229,7 +229,7 @@ With this seed function you see a style we got used to: We prefix all the functi
 
 ### Tested all the way
 
-Being big fans of testing, we wanted the tests for our driver to be as easy and as fast as possible. You should be able to combine that with a REPL-first approach, where you can experiment on the REPL. Luckily, you can run Neo4j in embedded mode, so we did not need to rely on an existing Neo4j installation or a running docker image of Neo4j. Instead, all our tests run isolated in embedded Neo4j instances. We just needed to make sure not to use the Neo4j embedded API, but the bolt protocol. Easy, my collegue [Max Lorenz](https://github.com/maxlorenz) just bound the embedded Neo4j instance to an open port and connected the driver to that, just as you would do in production.
+Being big fans of testing, we wanted the tests for our driver to be as easy and as fast as possible. You should be able to combine that with a REPL-first approach, where you can experiment on the REPL. Luckily, you can run Neo4j in embedded mode, so we did not need to rely on an existing Neo4j installation or a running docker image of Neo4j. Instead, all our tests run isolated in embedded Neo4j instances. We just needed to make sure not to use the Neo4j embedded API, but the bolt protocol. Easy, my colleague [Max Lorenz](https://github.com/maxlorenz) just bound the embedded Neo4j instance to an open port and connected the driver to that, just as you would do in production.
 
 Using a `with-temp-db`-fixture, we just create a new session against that embedded database and test the neo4j-clj functions in a round-trip without external requirements. Voilá.
 
