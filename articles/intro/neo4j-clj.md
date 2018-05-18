@@ -9,7 +9,7 @@ _**On designing a 'simple' interface to the Neo4j graph database.**_
 
 ---
 
-While creating a platform where humans and AI collaborate to detect and mitigate Cyber Security Threats at [CYPP](https://www.cypp.de), we chose to use [Clojure](https://clojure.org/) and [Neo4j](https://neo4j.com/) as part of our tech stack. To do so, we created a new driver library (around the Java Neo4j driver), following the Clojuresque way of making simple things easy. And we chose to share it, to co-develop it under the Gorillalabs organization. Follow along to understand our motivation, get to know our design decisions, and see examples. If you choose a similar tech stack, this should give you a head start.
+While creating a platform where humans and AI collaborate to detect and mitigate cybersecurity threats at [CYPP](https://www.cypp.de), we chose to use [Clojure](https://clojure.org/) and [Neo4j](https://neo4j.com/) as part of our tech stack. To do so, we created a new driver library (around the Java Neo4j driver), following the Clojuresque way of making simple things easy. And we chose to share it, to co-develop it under the Gorillalabs organization. Follow along to understand our motivation, get to know our design decisions, and see examples. If you choose a similar tech stack, this should give you a head start.
 
 ## Who we are
 
@@ -30,7 +30,7 @@ For many of those projects, Clojure has two nice properties: First, it comes wit
 
 ## Graphs are everywhere - so make use of them
 
-For threat hunting, i.e. the process of detecting Cyber Security threats in an organisation, graphs are a natural data modelling tool. The most obvious graph is the one where computers are connected through TCP/IP connections. You can find malicious behaviour if one of your computers shows unwanted connections. (Examples are over-simplified here.)
+For threat hunting, i.e. the process of detecting cybersecurity threats in an organisation, graphs are a natural data modelling tool. The most obvious graph is the one where computers are connected through TCP/IP connections. You can find malicious behaviour if one of your computers shows unwanted connections. (Examples are over-simplified here.)
 
 ![Graph of computers connected](assets/graph_hosts.svg)
 
