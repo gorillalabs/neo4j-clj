@@ -2,7 +2,7 @@
   (:require [neo4j-clj.core :as db]))
 
 (def local-db
-  (db/create-connection "bolt://localhost:7687" "neo4j" "password"))
+  (db/connect "bolt://localhost:7687" "neo4j" "password"))
 
 (db/defquery create-user
   "CREATE (u:user $user)")
@@ -19,6 +19,6 @@
     (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
   ;; Using a transaction
-  (with-transaction local-db tx
+  (db/with-transaction local-db tx
     (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
 )
