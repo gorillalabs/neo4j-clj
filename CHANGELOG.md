@@ -3,8 +3,16 @@ All notable changes to this project will be documented in this file. This change
 
 
 ## [Unreleased]
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.0.0...HEAD)
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.1.0...HEAD)
 
+## [1.0.0] - 2018-04-11
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.0.0...v1.1.0)
+
+### Added
+- Support for driver configuration (logging)
+
+### Fixed
+- Tests running on Java 9 upwards.
 
 ## [1.0.0] - 2018-04-11
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.5.0...v1.0.0)
