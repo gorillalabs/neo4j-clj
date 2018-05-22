@@ -15,21 +15,36 @@
 
 ;; Connecting to dbs
 
+(defn config [options]
+  (let [logging (:logging options (ConsoleLogging. Level/CONFIG))]
+    (-> (Config/build)
+        (.withLogging logging)
+        (.toConfig))))
+
 (defn connect
   "Returns a connection map from an url. Uses BOLT as the only communication
-  protocol."
+  protocol.
+
+  You can connect using a url or a url, user, password combination.
+  Either way, you can optioninally pass a map of options:
+
+  `:logging`   - a Neo4j logging configuration, e.g. (ConsoleLogging. Level/FINEST)
+
+  "
   ([url user password]
+   (connect url user password nil))
+  ([url user password options]
    (let [auth   (AuthTokens/basic user password)
-         config (-> (Config/build)
-                    (.withLogging (ConsoleLogging. Level/ALL))
-                    (.toConfig))
+         config (config options)
          db     (GraphDatabase/driver url auth config)]
      {:url        url, :user user, :password password, :db db
       :destroy-fn #(.close db)}))
+
   ([url]
-   (let [config (-> (Config/build)
-                    (.withLogging (ConsoleLogging. Level/ALL))
-                    (.toConfig))
+   (connect url nil))
+
+  ([url options]
+   (let [config (config options)
          db     (GraphDatabase/driver url config)]
      {:url url, :db db, :destroy-fn #(.close db)})))
 
@@ -77,7 +92,7 @@
   []
   (let [url (create-temp-uri)
         db  (in-memory-db url)]
-    (merge (connect (str "bolt://" url))
+    (merge (connect (str "bolt://" url) {:logging (ConsoleLogging. Level/WARNING)})
            {:destroy-fn #(.shutdown db)})))
 
 ;; Sessions and transactions
