@@ -67,11 +67,11 @@ You can clone our repository and run the [example](example/) for yourself.
 
   ;; Using a session
   (with-open [session (db/get-session local-db)]
-    (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
+    (create-user session {:user {:firstName "Luke" :lastName "Skywalker"}}))
 
   ;; Using a transaction
   (db/with-transaction local-db tx
-    (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}}))
+    (get-all-users tx)) ;; => ({:user {:firstName "Luke", :lastName "Skywalker"}}))
 ```
 
 ## In-depth look
