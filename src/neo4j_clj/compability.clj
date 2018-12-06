@@ -17,7 +17,8 @@
             ListValue
             MapValue
             RelationshipValue
-            StringValue)
+            StringValue
+            IntegerValue)
            (org.neo4j.cypher.internal.javacompat
             ExecutionResult)
            (java.util Map List)
@@ -76,6 +77,9 @@
 
 (defmethod neo4j->clj StringValue [^StringValue v]
   (.asObject v))
+
+(defmethod neo4j->clj IntegerValue [^IntegerValue v]
+  (.asLong v))
 
 (defmethod neo4j->clj ListValue [^ListValue l]
   (map neo4j->clj (into [] (.asList l))))
