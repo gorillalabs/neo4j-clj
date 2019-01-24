@@ -3,9 +3,24 @@ All notable changes to this project will be documented in this file. This change
 
 
 ## [Unreleased]
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.1.0...HEAD)
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v2.0.0...HEAD)
 
-## [1.0.0] - 2018-04-11
+## [2.0.0] - 2019-01-24
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.2.0...v2.0.0)
+
+### Changed
+- Updated to Clojure 1.10.0, Neo4j libraries 3.5.2 (#14)
+
+## [1.2.0] - 2019-01-24
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.1.0...v1.2.0)
+
+### Added
+- Support for IntegerValues (#13)
+
+### Changed
+- Documentation (#12)
+
+## [1.1.0] - 2018-05-22
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.0.0...v1.1.0)
 
 ### Added
@@ -21,7 +36,7 @@ All notable changes to this project will be documented in this file. This change
 [Moved dependency to neo4j-harness](https://github.com/gorillalabs/neo4j-clj/issues/5). If you relied on neo4j-clj to bring this dependency so far, you need to add it to your project yourself. It should be a dev dependency only. 
 
 
-## [0.5.0] - 2018-01-08
+## [0.5.0] - 2018-01-18
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v0.4.2...v0.5.0)
 
 ### Changed
