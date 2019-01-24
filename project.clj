@@ -32,5 +32,5 @@
 
   :release-tasks [["vcs" "assert-committed"]
                   ["v" "update"]
-                  ["deploy" "releases"]
+                  ["deploy" "clojars"]
                   ["vcs" "push"]])
