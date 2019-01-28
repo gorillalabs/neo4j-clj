@@ -7,7 +7,7 @@
   "CREATE (u:TestUser $user)-[:SELF {reason: \"to test\"}]->(u)")
 
 (defquery get-test-users-by-name
-  "MATCH (u:TestUser {name: $name}) RETURN u.name as name, u.role as role, u.age as age")
+  "MATCH (u:TestUser {name: $name}) RETURN u.name as name, u.role as role, u.age as age, u.smokes as smokes")
 
 (defquery get-test-users-relationship
   "MATCH (u:TestUser {name: $name})-[s:SELF]->() RETURN collect(u) as ucoll, collect(s) as scoll")
@@ -16,7 +16,7 @@
   "MATCH (u:TestUser {name: $name}) DETACH DELETE u")
 
 (def dummy-user
-  {:name "MyTestUser" :role "Dummy" :age 42})
+  {:name "MyTestUser" :role "Dummy" :age 42 :smokes true})
 
 (def name-lookup
   {:name (:name dummy-user)})
