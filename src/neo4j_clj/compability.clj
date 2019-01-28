@@ -18,6 +18,7 @@
             MapValue
             RelationshipValue
             StringValue
+            BooleanValue
             IntegerValue)
            (org.neo4j.cypher.internal.javacompat
             ExecutionResult)
@@ -77,6 +78,9 @@
 
 (defmethod neo4j->clj StringValue [^StringValue v]
   (.asObject v))
+
+(defmethod neo4j->clj BooleanValue [^BooleanValue v]
+  (.asBoolean v))
 
 (defmethod neo4j->clj IntegerValue [^IntegerValue v]
   (.asLong v))
