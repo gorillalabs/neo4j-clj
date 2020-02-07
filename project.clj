@@ -4,21 +4,20 @@
   :url "https://github.com/gorillalabs/neo4j-clj"
   :license {:name "MIT License"}
 
-  :plugins [[com.roomkey/lein-v "7.0.0"]
-            [lein-ancient "0.6.15"]]
+  :plugins [[com.roomkey/lein-v "7.0.0"]]
 
   :middleware [leiningen.v/version-from-scm
                leiningen.v/dependency-version-from-scm
                leiningen.v/add-workspace-data]
                
-  :dependencies [[org.neo4j/neo4j "3.5.2"]
-                 [org.neo4j/neo4j-cypher "3.5.2"]
-                 [org.neo4j.driver/neo4j-java-driver "1.7.2"]
-                 [clj-time "0.15.1"]]
+  :dependencies [[org.neo4j/neo4j "4.0.0"]
+                 [org.neo4j/neo4j-cypher "4.0.0"]
+                 [org.neo4j.driver/neo4j-java-driver "4.0.0"]
+                 [clj-time "0.15.2"]]
 
-  :profiles {:provided     {:dependencies [[org.clojure/clojure "1.10.0"]
+  :profiles {:provided     {:dependencies [[org.clojure/clojure "1.10.1"]
                                            [joplin.core "0.3.11"]
-                                           [org.neo4j.test/neo4j-harness "3.5.2"]]}
+                                           [org.neo4j.test/neo4j-harness "4.0.0"]]}
              :default      [:base :system :user :provided :dev]
              :dev          [:project/dev :profiles/dev]
              :profiles/dev {}

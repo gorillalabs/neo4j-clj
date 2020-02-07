@@ -1,7 +1,7 @@
 (ns neo4j-clj.core-test
   (:require [clojure.test :refer :all]
             [neo4j-clj.core :refer :all])
-  (:import (org.neo4j.driver.v1.exceptions TransientException)))
+  (:import (org.neo4j.driver.exceptions TransientException)))
 
 (defquery create-test-user
   "CREATE (u:TestUser $user)-[:SELF {reason: \"to test\"}]->(u)")

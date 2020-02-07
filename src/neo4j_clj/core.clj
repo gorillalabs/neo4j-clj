@@ -4,22 +4,23 @@
   testing."
   (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
             [clojure.java.io :as io])
-  (:import (org.neo4j.driver.v1 Values GraphDatabase AuthTokens Transaction Config)
-           (org.neo4j.driver.v1.exceptions TransientException)
-           (org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
-                                      GraphDatabaseFactory)
-           (java.net ServerSocket)
+  (:import (org.neo4j.driver Values GraphDatabase AuthTokens Transaction Config AuthToken Driver Session)
+           (org.neo4j.driver.exceptions TransientException)
+    #_(org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
+                                 GraphDatabaseFactory)
+           (java.net ServerSocket URI)
            (java.io File)
            (org.neo4j.driver.internal.logging ConsoleLogging)
-           (java.util.logging Level)))
+           (java.util.logging Level)
+           (org.neo4j.harness Neo4jBuilders Neo4j)))
 
 ;; Connecting to dbs
 
 (defn config [options]
   (let [logging (:logging options (ConsoleLogging. Level/CONFIG))]
-    (-> (Config/build)
+    (-> (Config/builder)
         (.withLogging logging)
-        (.toConfig))))
+        (.build))))
 
 (defn connect
   "Returns a connection map from an url. Uses BOLT as the only communication
@@ -28,25 +29,28 @@
   You can connect using a url or a url, user, password combination.
   Either way, you can optioninally pass a map of options:
 
-  `:logging`   - a Neo4j logging configuration, e.g. (ConsoleLogging. Level/FINEST)
-
-  "
-  ([url user password]
-   (connect url user password nil))
-  ([url user password options]
-   (let [auth   (AuthTokens/basic user password)
-         config (config options)
-         db     (GraphDatabase/driver url auth config)]
-     {:url        url, :user user, :password password, :db db
+  `:logging`   - a Neo4j logging configuration, e.g. (ConsoleLogging. Level/FINEST)"
+  ([^URI uri user password]
+   (connect uri user password nil))
+  ([^URI uri user password options]
+   (let [^AuthToken auth (AuthTokens/basic user password)
+         ^Config config (config options)
+         db (GraphDatabase/driver uri auth config)]
+     {:url        uri,
+      :user       user,
+      :password   password,
+      :db         db
       :destroy-fn #(.close db)}))
 
-  ([url]
-   (connect url nil))
+  ([^URI uri]
+   (connect uri nil))
 
-  ([url options]
-   (let [config (config options)
-         db     (GraphDatabase/driver url config)]
-     {:url url, :db db, :destroy-fn #(.close db)})))
+  ([^URI uri options]
+   (let [^Config config (config options)
+         db (GraphDatabase/driver uri, config)]
+     {:url        uri,
+      :db         db,
+      :destroy-fn #(.close db)})))
 
 (defn disconnect [db]
   "Disconnect a connection"
@@ -56,7 +60,7 @@
 
 (defn- get-free-port []
   (let [socket (ServerSocket. 0)
-        port   (.getLocalPort socket)]
+        port (.getLocalPort socket)]
     (.close socket)
     port))
 
@@ -69,19 +73,23 @@
 (defn- in-memory-db
   "In order to store temporary large graphs, the embedded Neo4j database uses a
   directory and binds to an url. We use the temp directory for that."
-  [url]
-  (let [bolt   (GraphDatabaseSettings$BoltConnector. "0")
-        temp   (System/getProperty "java.io.tmpdir")
-        millis (str (System/currentTimeMillis))
-        folder (File. (.getPath (io/file temp millis)))]
-    (println "temp: " temp)
-    (println "folder: " folder)
-    (-> (GraphDatabaseFactory.)
-        (.newEmbeddedDatabaseBuilder folder)
-        (.setConfig (.type bolt) "BOLT")
-        (.setConfig (.enabled bolt) "true")
-        (.setConfig (.address bolt) url)
-        (.newGraphDatabase))))
+  []
+
+  (.build (Neo4jBuilders/newInProcessBuilder))
+
+
+  #_(let [bolt (GraphDatabaseSettings$BoltConnector. "0")
+          temp (System/getProperty "java.io.tmpdir")
+          millis (str (System/currentTimeMillis))
+          folder (File. (.getPath (io/file temp millis)))]
+      (println "temp: " temp)
+      (println "folder: " folder)
+      (-> (GraphDatabaseFactory.)
+          (.newEmbeddedDatabaseBuilder folder)
+          (.setConfig (.type bolt) "BOLT")
+          (.setConfig (.enabled bolt) "true")
+          (.setConfig (.address bolt) url)
+          (.newGraphDatabase))))
 
 (defn create-in-memory-connection
   "To make the local db visible under the same interface/map as remote
@@ -91,29 +99,29 @@
   _All_ data will be wiped after shutting down the db!"
   []
   (let [url (create-temp-uri)
-        db  (in-memory-db url)]
-    (merge (connect (str "bolt://" url) {:logging (ConsoleLogging. Level/WARNING)})
-           {:destroy-fn #(.shutdown db)})))
+        ^Neo4j db (in-memory-db)]
+    (merge (connect (.boltURI db) {:logging (ConsoleLogging. Level/WARNING)})
+           {:destroy-fn #(.close db)})))
 
 ;; Sessions and transactions
 
-(defn get-session [connection]
+(defn get-session [^Driver connection]
   (.session (:db connection)))
 
 (defn- make-success-transaction [tx]
-  (proxy [org.neo4j.driver.v1.Transaction] []
+  (proxy [org.neo4j.driver.Transaction] []
     (run
       ([q] (.run tx q))
       ([q p] (.run tx q p)))
-    (success [] (.success tx))
-    (failure [] (.failure tx))
+    (commit [] (.commit tx))
+    (rollback [] (.rollback tx))
 
     ;; We only want to auto-success to ensure persistence
     (close []
-      (.success tx)
+      (.commit tx)
       (.close tx))))
 
-(defn get-transaction [session]
+(defn get-transaction [^Session session]
   (make-success-transaction (.beginTransaction session)))
 
 ;; Executing cypher queries

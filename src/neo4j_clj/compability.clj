@@ -4,13 +4,13 @@
   has functions to help to convert between Neo4j's data structures and Clojure"
   (:require [clojure.walk]
             [clojure.string :as string])
-  (:import (org.neo4j.driver.v1 Values)
+  (:import (org.neo4j.driver Values)
            (org.neo4j.driver.internal
-            InternalRecord
-            InternalPair
-            InternalRelationship
-            InternalStatementResult
-            InternalNode)
+             InternalRecord
+             InternalPair
+             InternalRelationship
+             #_InternalStatementResult
+             InternalNode InternalResult)
            (org.neo4j.driver.internal.value
             NodeValue
             NullValue
@@ -20,7 +20,7 @@
             StringValue
             BooleanValue
             IntegerValue)
-           (org.neo4j.cypher.internal.javacompat
+           #_(org.neo4j.cypher.internal.javacompat
             ExecutionResult)
            (java.util Map List)
            (clojure.lang ISeq)))
@@ -59,7 +59,7 @@
          x))
      m)))
 
-(defmethod neo4j->clj InternalStatementResult [record]
+(defmethod neo4j->clj InternalResult [record]
   (map neo4j->clj (iterator-seq record)))
 
 (defmethod neo4j->clj InternalRecord [record]
