@@ -45,7 +45,7 @@ You can clone our repository and run the [example](example/) for yourself.
 ;; instead.
 
 (def local-db
-  (db/connect "bolt://localhost:7687" "neo4j" "password"))
+  (db/connect (java.net.URI. "bolt://localhost:7687") "neo4j" "password"))
 
 ;; We're big fans of using Strings to represent Cypher queries, and not wrap Cypher into some
 ;; other data structure to make things more complicated then necessary. So simply defquery your query...
@@ -81,7 +81,7 @@ You can clone our repository and run the [example](example/) for yourself.
 First of all, you need to connect to the database.
 
 ```clojure
-(db/connect "bolt://localhost:7687" "neo4j" "password")
+(db/connect (java.net.URI. "bolt://localhost:7687") "neo4j" "password")
 ```
 
 ### Session
