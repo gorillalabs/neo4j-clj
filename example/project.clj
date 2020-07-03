@@ -5,7 +5,9 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.10.1"]
-                 [gorillalabs/neo4j-clj "4.0.0"]]
+                 [gorillalabs/neo4j-clj "4.0.1"]
+                 [org.neo4j.test/neo4j-harness "4.0.0"]
+                 [joplin.core "0.3.11"]]
 
   :main ^:skip-aot example.core
   :target-path "target/%s"

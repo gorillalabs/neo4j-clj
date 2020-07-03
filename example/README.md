@@ -5,7 +5,7 @@
 
 Clone this example project
 
-    git clone git@github.com:CYPP/neo4j-clj.git
+    git clone ggit@github.com:gorillalabs/neo4j-clj.git
 
 ## Usage
 
@@ -15,13 +15,13 @@ Change into the examples project using
 
 and run
 
-    lein test
+    lein run
     
-to run all the tests associated.
+to run the example associated.
 
 
 ## License
 
-Copyright © 2017 CYPP GmbH
+Copyright © 2020 gorillalabs
 
 Distributed under the MIT License.
