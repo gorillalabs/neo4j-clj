@@ -1,8 +1,11 @@
 (ns example.core
-  (:require [neo4j-clj.core :as db]))
+  (:require [neo4j-clj.core :as db])
+  (:import (java.net URI)))
 
 (def local-db
-  (db/connect "bolt://localhost:7687" "neo4j" "password"))
+  (db/connect (URI. "bolt://localhost:7687")
+              "neo4j"
+              "YA4jI)Y}D9a+y0sAj]T5s|C5qX!w.T0#u<be5w6X[p"))
 
 (db/defquery create-user
   "CREATE (u:user $user)")
@@ -20,5 +23,5 @@
 
   ;; Using a transaction
   (db/with-transaction local-db tx
-    (get-all-users tx)) ;; => ({:user {:first-name "Luke", :last-name "Skywalker"}})
-)
+    ;; print, as query result has to be consumed inside session
+    (println (get-all-users tx))))

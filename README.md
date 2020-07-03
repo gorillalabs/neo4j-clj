@@ -38,25 +38,16 @@ You can clone our repository and run the [example](example/) for yourself.
 
 ```clojure
 (ns example.core
-  (:require [neo4j-clj.core :as db]))
-
-;; first of all, connect to a Neo4j instance using URL, user and password credentials.
-;; Remember not to check in credentials into source code repositories, but use environment variables
-;; instead.
+  (:require [neo4j-clj.core :as db])
+  (:import (java.net URI)))
 
 (def local-db
-  (db/connect "bolt://localhost:7687" "neo4j" "password"))
-
-;; We're big fans of using Strings to represent Cypher queries, and not wrap Cypher into some
-;; other data structure to make things more complicated then necessary. So simply defquery your query...
+  (db/connect (URI. "bolt://localhost:7687")
+              "neo4j"
+              "YA4jI)Y}D9a+y0sAj]T5s|C5qX!w.T0#u<be5w6X[p"))
 
 (db/defquery create-user
   "CREATE (u:user $user)")
-  
-;; ... and you'll get a function `create-user` to call with a session and the parameters. See below.  
-
-;; Define any other queries you'll need. I'd suggest to keep all the Cypher queries in a separate namespace,
-;; but hey, that's up to you.
 
 (db/defquery get-all-users
   "MATCH (u:user) RETURN u as user")
@@ -67,11 +58,12 @@ You can clone our repository and run the [example](example/) for yourself.
 
   ;; Using a session
   (with-open [session (db/get-session local-db)]
-    (create-user session {:user {:firstName "Luke" :lastName "Skywalker"}}))
+    (create-user session {:user {:first-name "Luke" :last-name "Skywalker"}}))
 
   ;; Using a transaction
   (db/with-transaction local-db tx
-    (get-all-users tx)) ;; => ({:user {:firstName "Luke", :lastName "Skywalker"}}))
+    ;; print, as query result has to be consumed inside session
+    (println (get-all-users tx))))
 ```
 
 ## In-depth look
@@ -81,7 +73,10 @@ You can clone our repository and run the [example](example/) for yourself.
 First of all, you need to connect to the database.
 
 ```clojure
-(db/connect "bolt://localhost:7687" "neo4j" "password")
+(db/connect (URI. "bolt://localhost:7687") ; bolt API URI
+            "neo4j" ; username
+            "YA4jI)Y}D9a+y0sAj]T5s|C5qX!w.T0#u<be5w6X[p" ; password
+)
 ```
 
 ### Session
