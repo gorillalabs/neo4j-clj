@@ -228,12 +228,15 @@ run the tests sucessfully.
 ### Testing
 
 
-For testing purposes, we use an im-memory database, which we address using the bolt protocol.
+For testing purposes, we provide access to the Neo4j in-memory database feature, which we address using the bolt protocol.
+
+To do so, you need to add a dependency to `[org.neo4j.test/neo4j-harness "4.0.0"]` to your project and require the
+`neo4j-clj.in-memory` namespace.
 
 ```clojure
 (def test-db
-  (neo4j/create-in-memory-connection))
+  (neo4j-clj.in-memory/create-in-memory-connection))
 ;; instead of (neo4j/connect url user password)
 ```
 
-So, you can easily run integration tests on your stuff.
+So, you can easily run tests on your stuff without requiring an external database.
