@@ -2,17 +2,12 @@
   "This namespace contains the logic to connect to Neo4j instances,
   create and run queries as well as creating an in-memory database for
   testing."
-  (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
-            [clojure.java.io :as io])
-  (:import (org.neo4j.driver Values GraphDatabase AuthTokens Transaction Config AuthToken Driver Session)
+  (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]])
+  (:import (org.neo4j.driver GraphDatabase AuthTokens Config AuthToken Driver Session)
            (org.neo4j.driver.exceptions TransientException)
-    #_(org.neo4j.graphdb.factory GraphDatabaseSettings$BoltConnector
-                                 GraphDatabaseFactory)
-           (java.net ServerSocket URI)
-           (java.io File)
+           (java.net URI)
            (org.neo4j.driver.internal.logging ConsoleLogging)
-           (java.util.logging Level)
-           (org.neo4j.harness Neo4jBuilders Neo4j)))
+           (java.util.logging Level)))
 
 ;; Connecting to dbs
 
@@ -56,52 +51,22 @@
   "Disconnect a connection"
   ((:destroy-fn db)))
 
-;; In-memory for testing
 
-(defn- get-free-port []
-  (let [socket (ServerSocket. 0)
-        port (.getLocalPort socket)]
-    (.close socket)
-    port))
-
-(defn- create-temp-uri
-  "In-memory databases need an uri to communicate with the bolt driver.
-  Therefore, we need to get a free port."
-  []
-  (str "localhost:" (get-free-port)))
-
-(defn- in-memory-db
-  "In order to store temporary large graphs, the embedded Neo4j database uses a
-  directory and binds to an url. We use the temp directory for that."
-  []
-
-  (.build (Neo4jBuilders/newInProcessBuilder))
-
-
-  #_(let [bolt (GraphDatabaseSettings$BoltConnector. "0")
-          temp (System/getProperty "java.io.tmpdir")
-          millis (str (System/currentTimeMillis))
-          folder (File. (.getPath (io/file temp millis)))]
-      (println "temp: " temp)
-      (println "folder: " folder)
-      (-> (GraphDatabaseFactory.)
-          (.newEmbeddedDatabaseBuilder folder)
-          (.setConfig (.type bolt) "BOLT")
-          (.setConfig (.enabled bolt) "true")
-          (.setConfig (.address bolt) url)
-          (.newGraphDatabase))))
-
-(defn create-in-memory-connection
+(defn ^{:deprecated "4.0.2"} create-in-memory-connection
   "To make the local db visible under the same interface/map as remote
   databases, we connect to the local url. To be able to shutdown the local db,
   we merge a destroy function into the map that can be called after testing.
 
   _All_ data will be wiped after shutting down the db!"
   []
-  (let [url (create-temp-uri)
-        ^Neo4j db (in-memory-db)]
-    (merge (connect (.boltURI db) {:logging (ConsoleLogging. Level/WARNING)})
-           {:destroy-fn #(.close db)})))
+  (try
+    (require 'neo4j-clj.in-memory)
+    (when-let [in-mem (find-ns 'neo4j-clj.in-memory)]
+      ((ns-resolve in-mem 'create-in-memory-connection)))
+    (catch Throwable t
+      (throw (ex-info "Sorry, unable to create an in-memory Neo4j instance.
+Did you include neo4j-harness to your classpath, e.g. as a test dependency
+to your project?" {} t)))))
 
 ;; Sessions and transactions
 

@@ -1,6 +1,7 @@
 (ns neo4j-clj.core-test
   (:require [clojure.test :refer :all]
-            [neo4j-clj.core :refer :all])
+            [neo4j-clj.core :refer :all]
+            [neo4j-clj.in-memory :refer [create-in-memory-connection]])
   (:import (org.neo4j.driver.exceptions TransientException)))
 
 (defquery create-test-user
