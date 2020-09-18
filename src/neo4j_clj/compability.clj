@@ -2,26 +2,22 @@
   "Neo4j communicates with Java via custom data structures. Those are
   can contain lists, maps, nulls, values or combinations. This namespace
   has functions to help to convert between Neo4j's data structures and Clojure"
-  (:require [clojure.walk]
-            [clojure.string :as string])
+  (:require [clojure.walk])
   (:import (org.neo4j.driver Values)
            (org.neo4j.driver.internal
              InternalRecord
              InternalPair
              InternalRelationship
-             #_InternalStatementResult
              InternalNode InternalResult)
            (org.neo4j.driver.internal.value
-            NodeValue
-            NullValue
-            ListValue
-            MapValue
-            RelationshipValue
-            StringValue
-            BooleanValue
-            IntegerValue)
-           #_(org.neo4j.cypher.internal.javacompat
-            ExecutionResult)
+             NodeValue
+             NullValue
+             ListValue
+             MapValue
+             RelationshipValue
+             StringValue
+             BooleanValue
+             IntegerValue)
            (java.util Map List)
            (clojure.lang ISeq)))
 
@@ -38,13 +34,13 @@
        Values/parameters))
 
 (defmulti neo4j->clj
-  "## Convert from Neo4j
+          "## Convert from Neo4j
 
-   Neo4j returns results as `StatementResults`, which contain `InternalRecords`,
-   which contain `InternalPairs` etc. Therefore, this multimethod recursively
-   calls itself with the extracted content of the data structure until we have
-   values, lists or `nil`."
-  class)
+           Neo4j returns results as `StatementResults`, which contain `InternalRecords`,
+           which contain `InternalPairs` etc. Therefore, this multimethod recursively
+           calls itself with the extracted content of the data structure until we have
+           values, lists or `nil`."
+          class)
 
 (defn transform [m]
   (let [f (fn [[k v]]
@@ -52,12 +48,12 @@
 
     ;; only apply to maps
     (clojure.walk/postwalk
-     (fn [x]
-       (if (or (map? x) (instance? Map x))
-         (with-meta (into {} (map f x))
-           (meta x))
-         x))
-     m)))
+      (fn [x]
+        (if (or (map? x) (instance? Map x))
+          (with-meta (into {} (map f x))
+                     (meta x))
+          x))
+      m)))
 
 (defmethod neo4j->clj InternalResult [record]
   (map neo4j->clj (iterator-seq record)))
@@ -96,8 +92,8 @@
 
 (defmethod neo4j->clj InternalNode [^InternalNode n]
   (with-meta (transform (into {} (.asMap n)))
-    {:labels (.labels n)
-     :id     (.id n)}))
+             {:labels (.labels n)
+              :id     (.id n)}))
 
 (defmethod neo4j->clj InternalRelationship [^InternalRelationship r]
   (neo4j->clj (.asValue r)))
