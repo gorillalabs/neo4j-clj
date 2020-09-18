@@ -3,7 +3,24 @@ All notable changes to this project will be documented in this file. This change
 
 
 ## [Unreleased]
-[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v2.0.0...HEAD)
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v4.0.1...HEAD)
+
+## [4.1.0] - 2020-09-18
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v4.0.0...v4.0.1)
+- Fix documentation and example project (#20, #22)
+- Clean dependencies (#19, #23)
+
+## [4.0.1] - 2020-02-08
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v4.0.0...v4.0.1)
+- Drop support for OpenJDK < 11
+
+## [4.0.0] - 2020-02-08
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v2.0.1...v4.0.0)
+- Update to Neo4j 4.0.0
+
+## [2.0.1] - 2019-01-28
+[Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v2.0.0...v2.0.1)
+- Added support for Boolean values (#15)
 
 ## [2.0.0] - 2019-01-24
 [Commit Log](https://github.com/gorillalabs/neo4j-clj/compare/v1.2.0...v2.0.0)
