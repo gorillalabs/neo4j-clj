@@ -57,7 +57,10 @@
   databases, we connect to the local url. To be able to shutdown the local db,
   we merge a destroy function into the map that can be called after testing.
 
-  _All_ data will be wiped after shutting down the db!"
+  _All_ data will be wiped after shutting down the db!
+
+  Deprecated: Please use `neo4j-clj.in-memory/create-in-memory-connection`
+  directly."
   []
   (try
     (require 'neo4j-clj.in-memory)
