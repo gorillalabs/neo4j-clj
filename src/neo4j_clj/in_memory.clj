@@ -4,10 +4,7 @@
   (:require [neo4j-clj.core :refer [connect]]
             [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
             [clojure.java.io :as io])
-  (:import (org.neo4j.driver Values GraphDatabase AuthTokens Transaction Config AuthToken Driver Session)
-           (org.neo4j.driver.exceptions TransientException)
-           (java.net ServerSocket URI)
-           (java.io File)
+  (:import (java.net ServerSocket)
            (org.neo4j.driver.internal.logging ConsoleLogging)
            (java.util.logging Level)
            (org.neo4j.harness Neo4jBuilders Neo4j)))
