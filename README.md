@@ -66,6 +66,9 @@ You can clone our repository and run the [example](example/) for yourself.
     (println (get-all-users tx))))
 ```
 
+If you do run stuff on the REPL, make sure to consume the results from the query before closing session/transaction - like I did with
+println. Use `doall` or whatever suits you, because otherwise you'll run into [issues](https://github.com/gorillalabs/neo4j-clj/issues/25).
+
 ## In-depth look
 
 ### Connection
