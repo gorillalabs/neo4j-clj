@@ -2,7 +2,7 @@
   "This namespace contains the logic to connect to Neo4j instances,
   create and run queries as well as creating an in-memory database for
   testing."
-  (:require [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]])
+  (:require [neo4j-clj.compatibility :refer [neo4j->clj clj->neo4j]])
   (:import (org.neo4j.driver GraphDatabase AuthTokens Config AuthToken Driver Session)
            (org.neo4j.driver.exceptions TransientException)
            (java.net URI)

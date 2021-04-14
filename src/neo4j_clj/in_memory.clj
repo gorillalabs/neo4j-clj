@@ -2,7 +2,7 @@
   "This namespace contains the logic to connect to JVM-local in-memory Neo4j
   instances, esp. for testing."
   (:require [neo4j-clj.core :refer [connect]]
-            [neo4j-clj.compability :refer [neo4j->clj clj->neo4j]]
+            [neo4j-clj.compatibility :refer [neo4j->clj clj->neo4j]]
             [clojure.java.io :as io])
   (:import (java.net ServerSocket)
            (org.neo4j.driver.internal.logging ConsoleLogging)
