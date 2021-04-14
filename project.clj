@@ -4,7 +4,7 @@
   :url "https://github.com/gorillalabs/neo4j-clj"
   :license {:name "MIT License"}
 
-  :plugins [[com.roomkey/lein-v "7.0.0"]]
+  :plugins [[com.roomkey/lein-v "7.2.0"]]
 
   :middleware [leiningen.v/version-from-scm
                leiningen.v/dependency-version-from-scm
