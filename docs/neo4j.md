@@ -7,7 +7,7 @@ docker run \
     --publish=7474:7474 \
     --publish=7687:7687 \
     --volume=$HOME/neo4j/data:/data \
-    neo4j:4.1
+    neo4j:latest
 ```
 
 __You have to login once and change the password! Default is neo4j/neo4j__
