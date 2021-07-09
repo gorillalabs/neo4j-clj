@@ -31,7 +31,7 @@ on how to build your own version.
 ## Example usage
 
 Throughout the examples, we assume you're having a Neo4j instance up and running.
-See our [Neo4j survival guide](docs/neo4j) for help on that.
+See our [Neo4j survival guide](docs/neo4j.md) for help on that.
 
 You can clone our repository and run the [example](example/) for yourself.
 
