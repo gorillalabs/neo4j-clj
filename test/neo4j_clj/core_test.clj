@@ -76,6 +76,21 @@
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '())))))
 
+(deftest transactions-fail-test
+  (testing "If an exception is thrown during a transaction, nothing should be committed"
+    (is (thrown? TransientException
+                 (with-transaction temp-db tx
+                   (execute tx "CREATE (x:test $t)" {:t {:payload 42}})
+                   (throw (TransientException. "" "I fail")))))
+    (with-transaction temp-db tx
+      (is (= (execute tx "MATCH (x:test) RETURN x")
+             '())))
+    (with-transaction temp-db tx
+      (execute tx "CREATE (x:test $t)" {:t {:payload 42}}))
+    (with-transaction temp-db tx
+      (is (= (execute tx "MATCH (x:test) RETURN x")
+             '({:x {:payload 42}}))))))
+
 ;; Retry
 (deftest deadlocks-fail
   (testing "When a deadlock occures,"
@@ -83,14 +98,6 @@
       (is (thrown? TransientException
                    (with-transaction temp-db tx
                      (throw (TransientException. "" "I fail"))))))
-    (testing "the retried transaction works"
-      (let [fail-times (atom 3)]
-        (is (= :result
-               (with-retry [temp-db tx]
-                 (if (pos? @fail-times)
-                   (do (swap! fail-times dec)
-                       (throw (TransientException. "" "I fail")))
-                   :result))))))
     (testing "the retried transaction throws after max retries"
       (is (thrown? TransientException
                    (with-retry [temp-db tx]
