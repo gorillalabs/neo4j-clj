@@ -10,12 +10,12 @@
                leiningen.v/dependency-version-from-scm
                leiningen.v/add-workspace-data]
                
-  :dependencies [[org.neo4j.driver/neo4j-java-driver "4.1.1"]
+  :dependencies [[org.neo4j.driver/neo4j-java-driver "5.19.0"]
                  [clj-time "0.15.2"]]
 
-  :profiles {:provided     {:dependencies [[org.clojure/clojure "1.10.1"]
+  :profiles {:provided     {:dependencies [[org.clojure/clojure "1.11.2"]
                                            [joplin.core "0.3.11"]
-                                           [org.neo4j.test/neo4j-harness "4.0.0"]]}
+                                           [org.neo4j.test/neo4j-harness "5.10.0"]]}
              :default      [:base :system :user :provided :dev]
              :dev          [:project/dev :profiles/dev]
              :profiles/dev {}
