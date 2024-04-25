@@ -11,10 +11,26 @@
 
 ;; Connecting to dbs
 
-(defn config [options]
+(defn config
+  "Constructs a Config object with the given options.
+
+  The Config object is used to create a Neo4j driver. It can be customized
+  with various options, such as logging configuration.
+
+  Args:
+    options: A map containing the configuration options.
+
+  Returns:
+    A Config object with the given options applied.
+
+  Example:
+  (config {:logging (ConsoleLogging. Level/INFO)})
+  This will create a Config object with the logging level set to INFO.
+  "
+  [options]
   (let [logging (:logging options (ConsoleLogging. Level/CONFIG))]
-    (-> (Config/builder)
-        (.withLogging logging)
+     (->  (Config/builder)
+          (.withLogging logging)
         (.build))))
 
 (defn connect
