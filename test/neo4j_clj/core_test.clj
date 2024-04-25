@@ -57,6 +57,21 @@
       (is (thrown? Exception (execute session "INVALID!!§$/%&/("))))))
 
 ;; Transactions
+(deftest transactions-fail-test
+  (testing "If an exception is thrown during a transaction, nothing should be committed"
+    (is (thrown? TransientException
+                 (with-transaction temp-db tx
+                                   (execute tx "CREATE (x:test $t)" {:t {:payload 42}})
+                                   (throw (TransientException. "" "I fail")))))
+    (with-transaction temp-db tx
+                      (is (= (execute tx "MATCH (x:test) RETURN x")
+                             '())))
+    (with-transaction temp-db tx
+                      (execute tx "CREATE (x:test $t)" {:t {:payload 42}}))
+    (with-transaction temp-db tx
+                      (is (= (execute tx "MATCH (x:test) RETURN x")
+                             '({:x {:payload 42}}))))))
+
 (deftest transactions-do-commit
   (testing "If using a transaction, writes are persistet"
     (with-transaction temp-db tx

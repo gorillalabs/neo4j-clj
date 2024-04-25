@@ -29,8 +29,8 @@
   "
   [options]
   (let [logging (:logging options (ConsoleLogging. Level/CONFIG))]
-     (->  (Config/builder)
-          (.withLogging logging)
+    (-> (Config/builder)
+        (.withLogging logging)
         (.build))))
 
 (defn connect
@@ -105,8 +105,21 @@ to your project?" {} t)))))
       (.commit tx)
       (.close tx))))
 
+(defn- make-transaction [tx]
+  (proxy [org.neo4j.driver.Transaction] []
+    (run
+      ([q] (.run tx q))
+      ([q p] (.run tx q p)))
+    (commit [] (.commit tx))
+    (rollback [] (.rollback tx))
+    (close []
+      (.close tx))))
+
 (defn get-transaction [^Session session]
   (make-success-transaction (.beginTransaction session)))
+
+(defn transaction [^Session session]
+  (make-transaction (.beginTransaction session)))
 
 ;; Executing cypher queries
 
@@ -142,8 +155,13 @@ to your project?" {} t)))))
       (:result res))))
 
 (defmacro with-transaction [connection tx & body]
-  `(with-open [~tx (get-transaction (get-session ~connection))]
-     ~@body))
+  `(with-open [~tx (transaction (get-session ~connection))]
+     (try
+       (let [r# (do ~@body)]
+         (.commit ~tx)
+         r#)
+       (finally
+         (.close ~tx)))))
 
 (defmacro with-retry [[connection tx & {:keys [max-times] :or {max-times 1000}}] & body]
   `(retry-times ~max-times
