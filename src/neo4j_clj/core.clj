@@ -89,8 +89,25 @@ to your project?" {} t)))))
 
 ;; Sessions and transactions
 
+(defn db-session-config
+  [db]
+  (-> (org.neo4j.driver.SessionConfig/builder)
+      (.withDatabase db)
+      (.build)))
+
+(defn get-session-with-config [^Driver connection config]
+  (.session (:db connection) config))
+
 (defn get-session [^Driver connection]
   (.session (:db connection)))
+
+; neo4j-clj related utils.
+(defmacro with-db-session
+  "Execute body expressions by using the same session. Useful when executing
+  multiple queries, each as a separete transaction."
+  [connection config session & body]
+  `(with-open [~session (get-session-with-config ~connection ~config)]
+     ~@body))
 
 (defn- make-success-transaction [tx]
   (proxy [org.neo4j.driver.Transaction] []
