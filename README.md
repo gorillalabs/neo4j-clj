@@ -18,8 +18,9 @@ and [Cypher](https://www.opencypher.org/) queries.
 
 ## Status
 
-neo4j-clj is in active use at our own projects,
-but it's not a feature complete client library in every possible sense.
+neo4j-clj was in active use at our own projects, but not anymore. 
+It's not a feature complete client library in every possible sense, and it
+is not in active development anymore, but only as a hobby project.
 
 You might choose to issue new feature requests,
 or clone the repo to add the feature and create a PR.
