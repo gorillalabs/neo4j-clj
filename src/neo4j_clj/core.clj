@@ -89,25 +89,18 @@ to your project?" {} t)))))
 
 ;; Sessions and transactions
 
-(defn db-session-config
+(defn session-config
   [db]
   (-> (org.neo4j.driver.SessionConfig/builder)
       (.withDatabase db)
       (.build)))
 
-(defn get-session-with-config [^Driver connection config]
-  (.session (:db connection) config))
-
-(defn get-session [^Driver connection]
+(defn get-session
+  ([^Driver connection]
   (.session (:db connection)))
+  ([^Driver connection config]
+   (.session (:db connection) config)))
 
-; neo4j-clj related utils.
-(defmacro with-db-session
-  "Execute body expressions by using the same session. Useful when executing
-  multiple queries, each as a separete transaction."
-  [connection config session & body]
-  `(with-open [~session (get-session-with-config ~connection ~config)]
-     ~@body))
 
 (defn- make-success-transaction [tx]
   (proxy [org.neo4j.driver.Transaction] []
@@ -171,7 +164,7 @@ to your project?" {} t)))))
       (recur (dec times) body)
       (:result res))))
 
-(defmacro with-transaction [connection tx & body]
+(defmacro ^:deprecated with-transaction [connection tx & body]
   `(with-open [~tx (transaction (get-session ~connection))]
      (try
        (let [r# (do ~@body)]
@@ -180,19 +173,18 @@ to your project?" {} t)))))
        (finally
          (.close ~tx)))))
 
-;;; TODO other parameters:
-;;; "SessionParameters{bookmarks=null, defaultAccessMode=WRITE, database='mydb', fetchSize=null, impersonatedUser=null, bookmarkManager=null}"
-(defn db-session-config [db]
-  (-> (org.neo4j.driver.SessionConfig/builder)
-      (.withDatabase db)
-      (.build)))
+;;; A modified version of with-transaction that takes a config (can generate with session-config)
+(defmacro ^:deprecated with-transaction-config [connection config tx & body]
+  `(with-open [~tx (transaction (get-session ~connection ~config))]
+     (try
+       (let [r# (do ~@body)]
+         (.commit ~tx)
+         r#)
+       (finally
+         (.close ~tx)))))
 
-(defn get-session-config [^Driver connection config]
-  (.session (:db connection) config))
-
-;;; A modified version of with-transaction that takes a config (can generate with db-session-config)
-(defmacro with-transaction-config [connection config tx & body]
-  `(with-open [~tx (transaction (get-session-config ~connection ~config))]
+(defmacro with-tx [[tx session] & body]
+  `(with-open [~tx (transaction ~session)]
      (try
        (let [r# (do ~@body)]
          (.commit ~tx)

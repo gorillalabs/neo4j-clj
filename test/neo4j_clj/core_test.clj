@@ -1,8 +1,12 @@
 (ns neo4j-clj.core-test
   (:require [clojure.test :refer :all]
-            [neo4j-clj.core :refer [defquery disconnect get-session execute with-transaction with-retry]]
+            [neo4j-clj.core :refer [defquery disconnect session-config get-session execute with-tx with-retry]]
             [neo4j-clj.in-memory :refer [create-in-memory-connection]])
   (:import (org.neo4j.driver.exceptions TransientException)))
+
+(defquery create-database
+          "CREATE DATABASE $db")
+
 
 (defquery create-test-user
   "CREATE (u:TestUser $user)-[:SELF {reason: \"to test\"}]->(u)")
@@ -60,34 +64,34 @@
 (deftest transactions-fail-test
   (testing "If an exception is thrown during a transaction, nothing should be committed"
     (is (thrown? TransientException
-                 (with-transaction temp-db tx
+                 (with-tx [tx (get-session temp-db)]
                                    (execute tx "CREATE (x:test $t)" {:t {:payload 42}})
                                    (throw (TransientException. "" "I fail")))))
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
                       (is (= (execute tx "MATCH (x:test) RETURN x")
                              '())))
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
                       (execute tx "CREATE (x:test $t)" {:t {:payload 42}}))
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
                       (is (= (execute tx "MATCH (x:test) RETURN x")
                              '({:x {:payload 42}}))))))
 
 (deftest transactions-do-commit
   (testing "If using a transaction, writes are persistet"
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
       (execute tx "CREATE (x:test $t)" {:t {:payload 42}})))
 
   (testing "If using a transaction, writes are persistet"
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '({:x {:payload 42}})))))
 
   (testing "If using a transaction, writes are persistet"
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
       (execute tx "MATCH (x:test) DELETE x" {:t {:payload 42}})))
 
   (testing "If using a transaction, writes are persistet"
-    (with-transaction temp-db tx
+    (with-tx [tx (get-session temp-db)]
       (is (= (execute tx "MATCH (x:test) RETURN x")
              '())))))
 
@@ -96,7 +100,7 @@
   (testing "When a deadlock occures,"
     (testing "the transaction throws an Exception"
       (is (thrown? TransientException
-                   (with-transaction temp-db tx
+                   (with-tx [tx (get-session temp-db)]
                      (throw (TransientException. "" "I fail"))))))
     (testing "the retried transaction works"
       (let [fail-times (atom 3)]
@@ -110,3 +114,33 @@
       (is (thrown? TransientException
                    (with-retry [temp-db tx]
                      (throw (TransientException. "" "I fail"))))))))
+
+;; Using different Databases
+
+#_(deftest separate-databases
+  (with-open [session (get-session temp-db)]
+    (create-database session {:db "DB1"})
+    (create-database session {:db "DB2"}))
+
+  (let [db-1-config (session-config "DB1")
+        db-2-config (session-config "DB2")]
+
+    (with-open [session (get-session temp-db db-1-config)]
+      (testing "You can create a new user with neo4j"
+        (create-test-user session {:user dummy-user}))
+
+      (testing "You can get a created user by name"
+        (is (= (get-test-users-by-name session name-lookup)
+               (list dummy-user)))))
+
+    (with-open [session (get-session temp-db db-1-config)]
+      (testing "You can get a created user by name"
+        (is (= (get-test-users-by-name session name-lookup)
+               (list dummy-user)))))
+
+    (with-open [session (get-session temp-db db-2-config)]
+      (testing "You can get a created user by name"
+        (is (= (get-test-users-by-name session name-lookup)
+               (list dummy-user)))))
+
+    ))
