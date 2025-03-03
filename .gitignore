@@ -57,3 +57,5 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 profiles.clj
+.clj-kondo
+.lsp
