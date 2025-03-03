@@ -163,6 +163,26 @@ to your project?" {} t)))))
        (finally
          (.close ~tx)))))
 
+;;; TODO other parameters:
+;;; "SessionParameters{bookmarks=null, defaultAccessMode=WRITE, database='mydb', fetchSize=null, impersonatedUser=null, bookmarkManager=null}"
+(defn db-session-config [db]
+  (-> (org.neo4j.driver.SessionConfig/builder)
+      (.withDatabase db)
+      (.build)))
+
+(defn get-session-config [^Driver connection config]
+  (.session (:db connection) config))
+
+;;; A modified version of with-transaction that takes a config (can generate with db-session-config)
+(defmacro with-transaction-config [connection config tx & body]
+  `(with-open [~tx (transaction (get-session-config ~connection ~config))]
+     (try
+       (let [r# (do ~@body)]
+         (.commit ~tx)
+         r#)
+       (finally
+         (.close ~tx)))))
+
 (defmacro with-retry [[connection tx & {:keys [max-times] :or {max-times 1000}}] & body]
   `(retry-times ~max-times
                 (fn []
