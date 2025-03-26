@@ -5,7 +5,7 @@
 (def local-db
   (db/connect (URI. "bolt://localhost:7687")
               "neo4j"
-              "YA4jI)Y}D9a+y0sAj]T5s|C5qX!w.T0#u<be5w6X[p"))
+              (System/getenv "NEO4J_PASSWORD")))
 
 (db/defquery create-user
   "CREATE (u:user $user)")
